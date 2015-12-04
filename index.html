@@ -3,8 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <title>Apresentação</title>
+    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/jquery.mousewheel-min.js"></script>
+    <script src="js/jquery.terminal-min.js"></script>
+    <link href="css/jquery.terminal.css" rel="stylesheet"/>
+    <script src="js/star_wars.js"></script>
+
+    <style type="text/css">
+        #terminal {
+        display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%)
+        }
+    </style>
+
 </head>
 <body>
+<div id="terminal"></div>
 
 </body>
+
+<script>
+    jQuery(document).ready(function($) {
+
+        $(function() {
+            var anim = false;
+            function typed(finish_typing) {
+                return function(term, message, delay, finish) {
+                    anim = true;
+                    var prompt = term.get_prompt();
+                    var c = 0;
+                    if (message.length > 0) {
+                        term.set_prompt('');
+                        var interval = setInterval(function() {
+                            term.insert(message[c++]);
+                            if (c == message.length) {
+                                clearInterval(interval);
+                                // execute in next interval
+                                setTimeout(function() {
+                                    // swap command with prompt
+                                    finish_typing(term, message, prompt);
+                                    anim = false
+                                    finish && finish();
+                                }, delay);
+                            }
+                        }, delay);
+                    }
+                };
+            }
+            var typed_prompt = typed(function(term, message, prompt) {
+                // swap command with prompt
+                term.set_command('');
+                term.set_prompt(message + ' ');
+            });
+            var typed_message = typed(function(term, message, prompt) {
+                term.set_command('');
+                term.echo('[[b;<green>;]'+message+']',{
+                    finalize: function(div) {
+                        div.css("color", "green");
+                    }
+                });
+                term.set_prompt(prompt);
+            });
+
+            $('#terminal').terminal(function(cmd, term) {
+
+                term.set_prompt('> ');
+                typed_message(term, "Espera ai você disse "+cmd, 100, function() {
+                });
+
+
+
+
+
+
+
+            }, {
+                name: 'xxx',
+                greetings: null,
+                width: 500,
+                height: 300,
+                onInit: function(term) {
+                    // first question
+                    var msg = "Bem vindo, meu nome é isvaldo";
+                    typed_message(term, msg, 100, function() {
+                        typed_prompt(term, "Qual é o seu ?:", 100);
+                    });
+                },
+                keydown: function(e) {
+                    //disable keyboard when animating
+                    if (anim) {
+                        return false;
+                    }
+                }
+            });
+        });
+
+
+    });
+</script>
 </html>
