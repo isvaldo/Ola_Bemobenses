@@ -6,8 +6,9 @@
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.mousewheel-min.js"></script>
     <script src="js/jquery.terminal-min.js"></script>
+    <script src="js/facebook.js"></script>
     <link href="css/jquery.terminal.css" rel="stylesheet"/>
-    <script src="js/star_wars.js"></script>
+
 
     <style type="text/css">
         #terminal {
@@ -18,16 +19,218 @@
             margin-right: -50%;
             transform: translate(-50%, -50%)
         }
-    </style>
 
+        .prompt, .command,.terminal-output {
+            font-weight:bold;
+            font-size: 15px;
+            color: #0c0;
+            text-shadow: 0 0 3px rgba(0,100,0,50);
+        }
+
+        span
+        {
+            font-weight:bold;
+            font-size: 15px;
+            color: #0c0;
+            text-shadow: 0 0 3px rgba(0,100,0,50);
+        }
+
+        html, body, div, span, canvas { margin:0; padding:0; }
+        #container {
+            overflow:hidden;
+            position:relative;
+        }
+        #pixie {
+            z-index:0;
+            background:-o-linear-gradient(top, #040429, #257eb7);
+            background:-ms-linear-gradient(top, #040429, #257eb7);
+            background:-moz-linear-gradient(top, #040429, #257eb7);
+            background:-webkit-linear-gradient(top, #040429, #257eb7);
+            background:linear-gradient(top, #040429, #257eb7);
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#040429', EndColorStr='#257eb7');
+            -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorStr='#040429', EndColorStr='#257eb7')";
+        }
+        #mountains, #grass {
+            width:100%;
+            position:absolute;
+            bottom:0;
+        }
+        #mountains {
+            height:156px;
+            z-index:1;
+            background:url(img/mountains.png) repeat-x 0 0;
+        }
+        #grass {
+            height:62px;
+            z-index:2;
+            background:url(img/grass.png) repeat-x left 10px;
+        }
+        img{
+            position: absolute;
+            left:700px;
+            background-color: rgba(4, 58, 7, 0.9);
+            width:100px;
+            height:100px;
+            box-shadow:20px 20px 50px 20px #959192
+        }
+
+    </style>
+    <script type="text/javascript">
+        /**
+         * Variáveis globais, controles
+         * de sincronização dos objetos
+         */
+        var WIDTH;
+        var HEIGHT;
+        var canvas;
+        var con;
+        var g;
+        var gravidade_x=0;
+        var gravidade_y=0;
+        var tamanhoArco=0;
+        var red=255;
+        var green=255;
+        var blue=255;
+        var pxs = new Array();
+        var rint = 60;
+
+        $(document).ready(function(){
+            WIDTH = window.innerWidth;
+            HEIGHT = window.innerHeight;
+            $('#container').width(WIDTH).height(HEIGHT);
+            canvas = document.getElementById('pixie');
+            $(canvas).attr('width', WIDTH).attr('height',HEIGHT);
+            con = canvas.getContext('2d');
+
+            /**
+             * Criando e formatando as particulas na tela
+             */
+            for(var i = 0; i < 100; i++) {
+                pxs[i] = new Circle();
+                pxs[i].reset();
+            }
+            /**
+             * definindo repetição dos frames
+             */
+            setInterval(draw,rint);
+
+            /**
+             * Carregando objetos da animação
+             * @type {*|jQuery|HTMLElement}
+             */
+            var $mountains = $('#mountains');
+            var $grass = $('#grass');
+            var $container = $('#container');
+            /**
+             * Efeito parallax
+             */
+            $container.mousedown(function(ev){
+                var ox = ev.clientX;
+                var om = parseInt($mountains.css('background-position').substr(0, $mountains.css('background-position').search(' ')));
+                var og = parseInt($grass.css('background-position').substr(0, $grass.css('background-position').search(' ')));
+                $container.mousemove(function(e){
+                    $mountains.css('background-position', om+((e.clientX-ox)/10)+'px 0px');
+                    $grass.css('background-position', og+((e.clientX-ox)/4)+'px 10px');
+                });
+                $container.mouseup(function(){
+                    $container.unbind('mousemove');
+                    $container.unbind('mouseup');
+                });
+            });
+        });
+
+        /**
+         *Define cada ciclo de frame
+         */
+        function draw() {
+            con.clearRect(0,0,WIDTH,HEIGHT);
+            for(var i = 0; i < pxs.length; i++) {
+                pxs[i].fade();
+                pxs[i].move();
+                pxs[i].draw();
+            }
+        }
+        /**
+         * Bloco que define cada particula
+         * @constructor
+         */
+        function Circle() {
+            this.s = {ttl:8000, xmax:5, ymax:2, rmax:10, rt:1, xdef:960, ydef:540, xdrift:4, ydrift: 4, random:true, blink:true};
+
+            this.reset = function() {
+                this.x = (this.s.random ? WIDTH*Math.random() : this.s.xdef);
+                this.y = (this.s.random ? HEIGHT*Math.random() : this.s.ydef);
+                this.r = ((this.s.rmax-1)*Math.random()) + 1;
+                this.dx = (Math.random()*this.s.xmax) * (Math.random() < .5 ? -1 : 1);
+                this.dy = (Math.random()*this.s.ymax) * (Math.random() < .5 ? -1 : 1);
+                this.hl = (this.s.ttl/rint)*(this.r/this.s.rmax);
+                this.rt = Math.random()*this.hl;
+                this.s.rt = Math.random()+1;
+                this.stop = Math.random()*.2+.4;
+                this.s.xdrift *= Math.random() * (Math.random() < .5 ? -1 : 1);
+                this.s.ydrift *= Math.random() * (Math.random() < .5 ? -1 : 1);
+            }
+
+            this.fade = function() {
+                this.rt += this.s.rt;
+            }
+            /**
+             * função que desenha cada instante de vida
+             * do ciclo de vida das particulas
+             */
+            this.draw = function() {
+                if(this.s.blink && (this.rt <= 0 || this.rt >= this.hl)) this.s.rt = this.s.rt*-1;
+                else if(this.rt >= this.hl) this.reset();
+                var newo = 1-(this.rt/this.hl);
+                con.beginPath();
+                con.arc(this.x,this.y,this.r,0,Math.PI*2,true);
+                con.closePath();
+                var cr = this.r*newo+tamanhoArco;
+                /**
+                 *Define a cor e efeito blink das particulas
+                 */
+                g = con.createRadialGradient(this.x,this.y,0,this.x,this.y,(cr <= 0 ? 1 : cr));
+                g.addColorStop(0.0, 'rgba('+red+','+green+','+blue+','+newo+')');
+                g.addColorStop(this.stop, 'rgba('+red *.6+','+green*0.6+','+blue*0.6+','+(newo*.6)+')');
+                g.addColorStop(1.0, 'rgba('+red *.6+','+green*0.6+','+blue*0.6+',0)');
+                con.fillStyle = g;
+                con.fill();
+            }
+            /**
+             * Define o movimento no ciclo de vida de uma particula
+             */
+            this.move = function() {
+                this.x += (this.rt/this.hl)*this.dx + gravidade_x;
+                this.y += (this.rt/this.hl)*this.dy + gravidade_y;
+                if(this.x > WIDTH || this.x < 0) this.dx *= -1;
+                if(this.y > HEIGHT || this.y < 0) this.dy *= -1;
+            }
+
+            this.getX = function() { return this.x; }
+            this.getY = function() { return this.y; }
+        }
+    </script>
 </head>
 <body>
-<div id="terminal"></div>
+
+
+<div id="container">
+
+    <div id="terminal">
+        <img src="" id="user" style="display: none;"/>
+    </div>
+    <canvas id="pixie" style="display: none"></canvas>
+    <div id="mountains" style="display: none"></div>
+    <div id="grass" style="display: none"></div>
+</div>
+
 
 </body>
 
 <script>
+
     jQuery(document).ready(function($) {
+
 
         $(function() {
             var anim = false;
@@ -61,37 +264,114 @@
             });
             var typed_message = typed(function(term, message, prompt) {
                 term.set_command('');
-                term.echo('[[b;<green>;]'+message+']',{
-                    finalize: function(div) {
-                        div.css("color", "green");
-                    }
-                });
+                term.echo(message);
                 term.set_prompt(prompt);
             });
 
+            /**
+             * Cenarios
+             */
+            var play = function (term){
+                for(i=0;i>5;i++){
+                    enrolation(term);
+                }
+
+            };
+            function enrolation(term){
+                term.echo("0 pacotes atualizados, 2 pacotes novos instalados, 0 a serem removidos e 9 não atualizados.");
+                term.echo("É preciso baixar 3.779 kB de arquivos.");
+                term.echo("Depois desta operação, 9.805 kB adicionais de espaço em disco serão usados.");
+                term.echo("plata ou plumbor? [ló compriendo] s");
+                term.echo("Obter:1 http://br.archive.ubuntu.com/ubuntu/ Bemobi/universe geany-common all 1.23.1+dfsg-1 [2.709 kB]");
+                term.echo("Obter:2 http://br.archive.ubuntu.com/ubuntu/ trusty/universe geany i386 1.23.1+dfsg-1 [1.070 kB]");
+                term.echo("Baixados 3.779 kB em 4s (885 kB/s)   ");
+                term.echo("A seleccionar pacote anteriormente não seleccionado Aperte-Play.");
+                term.echo("(Lendo banco de dados ... 533792 ficheiros e directórios actualmente instalados.)");
+                term.echo("Preparing to unpack .../geany-common_1.23.1+dfsg-1_all.deb ...");
+                term.echo("Unpacking geany-common (1.23.1+dfsg-1) ...");
+                term.echo("A seleccionar pacote anteriormente não seleccionado geany.");
+                term.echo("Preparing to unpack .../geany_1.23.1+dfsg-1_i386.deb ...");
+                term.echo("Unpacking geany (1.23.1+dfsg-1) ...");
+                term.echo("Processing triggers for doc-base (0.10.5) ...");
+                term.echo("Processando 1 adicionou arquivo doc-base");
+                term.echo("Registrando documentos com scrollkeeper...");
+                term.echo("Processing triggers for hicolor-icon-theme (0.13-1) ...");
+
+            }
+
+            function help(term){
+
+            }
+            var achouNome=false;
+            var nome="";
             $('#terminal').terminal(function(cmd, term) {
 
-                term.set_prompt('> ');
-                typed_message(term, "Espera ai você disse "+cmd, 100, function() {
-                });
+                if(achouNome == false) {
+                    term.clear();
+                    nome = cmd;
+                    var nomes = [];
+                    $.each(data.data, function (index, value) {
+                        if (cmd == value.name.split(" ")[0]) {
+                            nomes.push(value.name);
+                        }
+                    });
+
+                    if (nomes.length == 1) {
+                        term.echo("Ah olá " + nomes[0]);
+                        term.echo("acho que vi seu nome no desafio!!");
+                    }
+                    else if (nomes.length > 1) {
+                        term.echo("Hmm, existem "+nomes.length+" pessoas no grupo com esse nome,acho que é...");
+                        $.each(nomes,function(index,value){
+                           term.echo(value);
+                        });
+                    }else if (nome == "isvaldo"){
+                        term.echo("Opa ? Eu também tenho esse nome estranho !");
+                    }
+                    else{
+                        term.echo("Acho que não vi seu nome no desafio, muito prazer "+nome);
+                    }
+                    typed_message(term,"ok "+nome+" vamos começar !!!",150,function(){
+                        term.clear();
+                        term.echo("Digite 'play' para iniciar, ou help ver a lista de comandos");
+
+                    });
+                    achouNome=true;
+                    term.echo("Digite 'play' para iniciar, ou help ver a lista de comandos");
+                    
+                }
 
 
 
 
 
-
+                $("#pixie").show( "slow");
+                $("#grass").show( "slow");
+                $("#mountains").show( "slow");
 
             }, {
-                name: 'xxx',
+                name: 'apresentacao',
                 greetings: null,
-                width: 500,
+                width: 800,
                 height: 300,
                 onInit: function(term) {
-                    // first question
-                    var msg = "Bem vindo, meu nome é isvaldo";
-                    typed_message(term, msg, 100, function() {
-                        typed_prompt(term, "Qual é o seu ?:", 100);
+                    // Apresentação inicial
+                    var msg = "Olá tudo bem ?";
+                    typed_message(term, msg, 0, function() {
+
+                        typed_message(term, "Bom, antes de fazer essa apresentação...",2,
+                                function() {
+                                    typed_message(term, "Eu gostaria de conhecer você", 2,
+                                    function(){
+                                        typed_prompt(term,"Qual é o seu primeiro nome?:",2), function(){
+
+                                        };
+                                    });
+                                });
+
                     });
+
+
                 },
                 keydown: function(e) {
                     //disable keyboard when animating
