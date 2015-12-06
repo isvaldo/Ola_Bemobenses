@@ -6,219 +6,19 @@
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.mousewheel-min.js"></script>
     <script src="js/jquery.terminal-min.js"></script>
+    <script src="js/star_wars.js"></script>
     <script src="js/facebook.js"></script>
     <link href="css/jquery.terminal.css" rel="stylesheet"/>
-
-
-    <style type="text/css">
-        #terminal {
-        display: block;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-right: -50%;
-            transform: translate(-50%, -50%)
-        }
-
-        .prompt, .command,.terminal-output {
-            font-weight:bold;
-            font-size: 15px;
-            color: #0c0;
-            text-shadow: 0 0 3px rgba(0,100,0,50);
-        }
-
-        span
-        {
-            font-weight:bold;
-            font-size: 15px;
-            color: #0c0;
-            text-shadow: 0 0 3px rgba(0,100,0,50);
-        }
-
-        html, body, div, span, canvas { margin:0; padding:0; }
-        #container {
-            overflow:hidden;
-            position:relative;
-        }
-        #pixie {
-            z-index:0;
-            background:-o-linear-gradient(top, #040429, #257eb7);
-            background:-ms-linear-gradient(top, #040429, #257eb7);
-            background:-moz-linear-gradient(top, #040429, #257eb7);
-            background:-webkit-linear-gradient(top, #040429, #257eb7);
-            background:linear-gradient(top, #040429, #257eb7);
-            filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#040429', EndColorStr='#257eb7');
-            -ms-filter:"progid:DXImageTransform.Microsoft.gradient(startColorStr='#040429', EndColorStr='#257eb7')";
-        }
-        #mountains, #grass {
-            width:100%;
-            position:absolute;
-            bottom:0;
-        }
-        #mountains {
-            height:156px;
-            z-index:1;
-            background:url(img/mountains.png) repeat-x 0 0;
-        }
-        #grass {
-            height:62px;
-            z-index:2;
-            background:url(img/grass.png) repeat-x left 10px;
-        }
-        img{
-            position: absolute;
-            left:700px;
-            background-color: rgba(4, 58, 7, 0.9);
-            width:100px;
-            height:100px;
-            box-shadow:20px 20px 50px 20px #959192
-        }
-
-    </style>
-    <script type="text/javascript">
-        /**
-         * Variáveis globais, controles
-         * de sincronização dos objetos
-         */
-        var WIDTH;
-        var HEIGHT;
-        var canvas;
-        var con;
-        var g;
-        var gravidade_x=0;
-        var gravidade_y=0;
-        var tamanhoArco=0;
-        var red=255;
-        var green=255;
-        var blue=255;
-        var pxs = new Array();
-        var rint = 60;
-
-        $(document).ready(function(){
-            WIDTH = window.innerWidth;
-            HEIGHT = window.innerHeight;
-            $('#container').width(WIDTH).height(HEIGHT);
-            canvas = document.getElementById('pixie');
-            $(canvas).attr('width', WIDTH).attr('height',HEIGHT);
-            con = canvas.getContext('2d');
-
-            /**
-             * Criando e formatando as particulas na tela
-             */
-            for(var i = 0; i < 300; i++) {
-                pxs[i] = new Circle();
-                pxs[i].reset();
-            }
-            /**
-             * definindo repetição dos frames
-             */
-            setInterval(draw,rint);
-
-            /**
-             * Carregando objetos da animação
-             * @type {*|jQuery|HTMLElement}
-             */
-            var $mountains = $('#mountains');
-            var $grass = $('#grass');
-            var $container = $('#container');
-            /**
-             * Efeito parallax
-             */
-            $container.mousedown(function(ev){
-                var ox = ev.clientX;
-                var om = parseInt($mountains.css('background-position').substr(0, $mountains.css('background-position').search(' ')));
-                var og = parseInt($grass.css('background-position').substr(0, $grass.css('background-position').search(' ')));
-                $container.mousemove(function(e){
-                    $mountains.css('background-position', om+((e.clientX-ox)/10)+'px 0px');
-                    $grass.css('background-position', og+((e.clientX-ox)/4)+'px 10px');
-                });
-                $container.mouseup(function(){
-                    $container.unbind('mousemove');
-                    $container.unbind('mouseup');
-                });
-            });
-        });
-
-        /**
-         *Define cada ciclo de frame
-         */
-        function draw() {
-            con.clearRect(0,0,WIDTH,HEIGHT);
-            for(var i = 0; i < pxs.length; i++) {
-                pxs[i].fade();
-                pxs[i].move();
-                pxs[i].draw();
-            }
-        }
-        /**
-         * Bloco que define cada particula
-         * @constructor
-         */
-        function Circle() {
-            this.s = {ttl:8000, xmax:5, ymax:2, rmax:10, rt:1, xdef:960, ydef:540, xdrift:4, ydrift: 4, random:true, blink:true};
-
-            this.reset = function() {
-                this.x = (this.s.random ? WIDTH*Math.random() : this.s.xdef);
-                this.y = (this.s.random ? HEIGHT*Math.random() : this.s.ydef);
-                this.r = ((this.s.rmax-1)*Math.random()) + 1;
-                this.dx = (Math.random()*this.s.xmax) * (Math.random() < .5 ? -1 : 1);
-                this.dy = (Math.random()*this.s.ymax) * (Math.random() < .5 ? -1 : 1);
-                this.hl = (this.s.ttl/rint)*(this.r/this.s.rmax);
-                this.rt = Math.random()*this.hl;
-                this.s.rt = Math.random()+1;
-                this.stop = Math.random()*.2+.4;
-                this.s.xdrift *= Math.random() * (Math.random() < .5 ? -1 : 1);
-                this.s.ydrift *= Math.random() * (Math.random() < .5 ? -1 : 1);
-            }
-
-            this.fade = function() {
-                this.rt += this.s.rt;
-            }
-            /**
-             * função que desenha cada instante de vida
-             * do ciclo de vida das particulas
-             */
-            this.draw = function() {
-                if(this.s.blink && (this.rt <= 0 || this.rt >= this.hl)) this.s.rt = this.s.rt*-1;
-                else if(this.rt >= this.hl) this.reset();
-                var newo = 1-(this.rt/this.hl);
-                con.beginPath();
-                con.arc(this.x,this.y,this.r,0,Math.PI*2,true);
-                con.closePath();
-                var cr = this.r*newo+tamanhoArco;
-                /**
-                 *Define a cor e efeito blink das particulas
-                 */
-                g = con.createRadialGradient(this.x,this.y,0,this.x,this.y,(cr <= 0 ? 1 : cr));
-                g.addColorStop(0.0, 'rgba('+parseInt(red)+','+parseInt(green)+','+parseInt(blue)+','+newo+')');
-                g.addColorStop(this.stop, 'rgba('+parseInt(red *.6)+','+parseInt(green*0.6)+','+parseInt(blue*0.6)+','+(newo*.6)+')');
-                g.addColorStop(1.0, 'rgba('+parseInt(red *.6)+','+parseInt(green*0.6)+','+parseInt(blue*0.6)+',0)');
-                con.fillStyle = g;
-                con.fill();
-            }
-            /**
-             * Define o movimento no ciclo de vida de uma particula
-             */
-            this.move = function() {
-                this.x += (this.rt/this.hl)*this.dx + gravidade_x;
-                this.y += (this.rt/this.hl)*this.dy + gravidade_y;
-                if(this.x > WIDTH || this.x < 0) this.dx *= -1;
-                if(this.y > HEIGHT || this.y < 0) this.dy *= -1;
-            }
-
-            this.getX = function() { return this.x; }
-            this.getY = function() { return this.y; }
-        }
-    </script>
+    <link href="css/style.css" rel="stylesheet"/>
+    <script src="js/sky.js"></script>
 </head>
 <body>
 
 
 <div id="container">
-
     <div id="terminal">
-        <img src="" id="user" style="display: none;"/>
     </div>
+
     <canvas id="pixie" style="display: none"></canvas>
     <div id="mountains" style="display: none"></div>
     <div id="grass" style="display: none"></div>
@@ -228,9 +28,8 @@
 </body>
 
 <script>
-
     jQuery(document).ready(function($) {
-    var somdigito = new Audio('https://freesound.org/data/previews/149/149760_2703675-lq.mp3');
+    var somdigito = new Audio('sounds/keyboard.mp3');
 
         $(function() {
             var anim = false;
@@ -283,7 +82,7 @@
                     "bom ... ",//3
                     "Programar me permite fazer coisas incríveis… eu realmente amo !",//4
                     "Posso Mudar... A Forma,Velocidade",//5
-                    "Posso Mudar... A Cor,Som",//6
+                    "Posso Mudar... A Cor, O Som ...",//6
                     "Posso brincar com a fisica, haha posso até tirar até gravidade do espaço . . .",//7
                     "O melhor de tudo, posso mostrar isso para você… "+nome,
                     "Pronto... também posso fazer isso xD"];//8
@@ -321,6 +120,7 @@
                                             typed_message(term,lero[7],100,function(){
                                                 //"gravidade fall hauhsuahuhsa
                                                 gravidade_y = 6;
+                                                new Audio('https://freesound.org/data/previews/324/324587_2465261-lq.mp3').play();
                                                 typed_message(term,lero[8],150,function(){
                                                     //finale!
                                                     typed_message(term,". . . .",500,function(){
@@ -347,33 +147,6 @@
                         })
                     });
 
-
-            }
-
-            function pessoal(term,next){
-
-                var lero = ["Bom, "+nome,
-                    "Eu tenho 22 anos, faço Análise e desenvolvimento de sistemas no instituto infnet",
-                    "Meus hobbies?",
-                    "Role de Skate...",
-                    "Programar, ah é como beber café... viciante...",
-                    "Animação, controlar div's vodoras e sofrer com javascript",
-                    "Ahhh eu também leio bastante sobre Neurociência  kkkk"];
-
-                var start = 0;
-                var FalaPessoal = function(start){
-                    typed_message(term,lero[start],100,function(){
-                        start++;
-                        if (start == lero.length){
-                            typed_message(term,". . . .",500,function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-                        FalaPessoal(start);
-                    });
-                };
-                FalaPessoal(start);
 
             }
             function apt_get_update(term,next){
@@ -459,7 +232,14 @@
             }
 
             function help(term){
+                term.echo("");
                 term.echo("play -> executa todos os comandos um a um");
+                term.echo("pessoal -> resumo pessoal");
+                term.echo("motivacao -> resumo do que me inspira...");
+                term.echo("conhecimento -> resumo das minhas skills");
+                term.echo("profissional -> resumo pessoal");
+                term.echo("bemobi -> resumo pessoal");
+                term.echo("qualidade -> resumo pessoal");
             }
 
             /**
@@ -474,7 +254,7 @@
                                 pleno(term,function(){
                                     typed_message(term,"Hoje procuro um lugar como a Bemobi, uma empresa cheia de oportunidades.",80,
                                     function(){
-                                        typed_message(term,"Não é a minha primeira tentativa nessa empresa, e se necessário não vai ser a ultima haha.",80,
+                                        typed_message(term,"Não é a minha primeira tentativa nessa empresa, e se necessário não vai ser a ultima!",80,
                                                 function(){
                                                     typed_message(term,". . . .",400,function(){
                                                         term.clear();
@@ -521,7 +301,7 @@
                     "                 [Xerox]",
                     "# Conheci como é uma empresa de grande porte",
                     "# Aprendi um pouco sobre Criptografia",
-                    "# Descobri que dar Suporte ao usuário é algo terrível",
+                    "# Descobri que dar Suporte para usuários é algo terrível",
                     "# Implementei meu primeiro sistema 100% sozinho (:"];
 
                 var start = 0;
@@ -574,7 +354,6 @@
                 FalaPleno(start);
 
             }
-
             function bemobi(term,next){
                 var bemobi = ["Há pouco tempo, eu imaginava a Bemobi como",
                     "Uma produtora de software (mobile)",
@@ -612,7 +391,6 @@
 
 
             }
-
             function qualidade(term,next){
                 var qualidade = [
                     "Qualidade de software...",
@@ -676,6 +454,7 @@
 
                 if(achouNome == false) {
                     if(!isNaN(cmd) || cmd.length<3){
+                        new Audio('sounds/erro').play();
                         term.echo("Hmm não é um nome..., vamos lá, entre na brincadeira (:", {
                             finalize: function(div) {
                                 div.css("color", "red");
@@ -730,47 +509,102 @@
                     achouNome=true;
                 }
 
-                /**
-                 * Mostra os comandos possiveis (:
-                 */
-                if (cmd == "help"){
-                    apt_get_update(term);
-                }
 
-                /**
-                 * Cadeia principal
-                 * Chama todos os comandos sincronizando um apos outro.
-                 */
-                if (cmd == "play"){
-                    apt_get_update(term,function(){
-                        pessoal(term,function(){
-                            motivacao(term,function(){
-                                conhecimento(term,function(){
-                                    profissional(term,function(){
-                                        bemobi(term,function(){
-                                            qualidade(term,function(){
-                                                typed_message(term,"Muito obrigado ! Boa sorte pessoal!",100,function(){
 
-                                                    typed_message(term, "Digite 'play' para iniciar, ou help ver a lista de comandos",50,function(){
-                                                        term.echo(" ");
-                                                        term.echo("Linkedin: https://br.linkedin.com/in/isvaldo-fernandes-4a006239");
-                                                        term.echo(" ");
-                                                        term.echo("Source do projeto: https://github.com/isvaldo/Ola_Bemobenses");
-                                                        term.set_prompt('Root@'+nome+'/home/root/#');
-                                                        term.echo(" ");
-                                                        term.echo(" ");
+                switch (cmd.toLowerCase()){
+                    case "play":
+                        apt_get_update(term,function(){
+                            pessoal(term,function(){
+                                motivacao(term,function(){
+                                    conhecimento(term,function(){
+                                        profissional(term,function(){
+                                            bemobi(term,function(){
+                                                qualidade(term,function(){
+                                                    typed_message(term,"Muito obrigado ! Boa sorte pessoal!",100,function(){
+
+                                                        typed_message(term, "Digite 'play' para iniciar, ou help ver a lista de comandos",50,function(){
+                                                            term.echo(" ");
+                                                            term.echo("Linkedin: https://br.linkedin.com/in/isvaldo-fernandes-4a006239");
+                                                            term.echo(" ");
+                                                            term.echo("Source do projeto: https://github.com/isvaldo/Ola_Bemobenses");
+                                                            term.set_prompt('Root@'+nome+'/home/root/#');
+                                                            term.echo(" ");
+                                                            term.echo(" ");
+                                                        });
                                                     });
-                                                });
+                                                })
                                             })
-                                        })
 
+                                        })
                                     })
                                 })
-                            })
 
+                            });
                         });
-                    });
+                        break;
+                    case "help":
+                            help(term);
+                        break;
+                    case "pessoal":
+                            pessoal(term);
+                        break;
+                    case "motivacao":
+                        movivacao(term);
+                        break;
+                    case  "conhecimento":
+                        conhecimento(term);
+                        break;
+                    case   "profissional":
+                        profissional(term);
+                        break;
+                    case "bemobi":
+                        bemobi(term);
+                        break;
+                    case "qualidade":
+                        qualidade(term);
+                        break;
+                    case "filme":
+                        var frames = [];
+                        var LINES_PER_FRAME = 14;
+                        var DELAY = 67;
+                        var lines = star_wars.length;
+                        for (var i=0; i<lines; i+=LINES_PER_FRAME) {
+                            frames.push(star_wars.slice(i, i+LINES_PER_FRAME));
+                        }
+                        var stop = false;
+                    function play(term, delay) {
+                        var i = 0;
+                        var next_delay;
+                        if (delay == undefined) {
+                            delay = DELAY;
+                        }
+                        function display() {
+                            if (i == frames.length) {
+                                i = 0;
+                            }
+                            term.clear();
+                            if (frames[i][0].match(/[0-9]+/)) {
+                                next_delay = frames[i][0] * delay;
+                            } else {
+                                next_delay = delay;
+                            }
+                            term.echo(frames[i++].slice(1).join('\n')+'\n');
+                            if (!stop) {
+                                setTimeout(display, next_delay);
+                            } else {
+                                term.clear();
+                                greetings(term);
+                                i = 0;
+                            }
+                        }
+                        display();
 
+                    }
+                        stop = false;
+                            play(term);
+                        break;
+                    default:
+                        break;
                 }
 
 
@@ -789,13 +623,13 @@
                     term.echo("Terminal:");
                     typed_message(term,'Cenario cenario = new Cenario("javascript");       ',20,
                             function(){
-                                typed_message(term,'cenario.add(new Mountain("parallax");',50,
+                                typed_message(term,'cenario.add(new Mountain("parallax"));',50,
                                         function(){
                                             $("#mountains").show( "slow");
-                                            typed_message(term,'cenario.add(new Grass("function (){moveOnClick()}");',20,
+                                            typed_message(term,'cenario.add(new Grass("function (){moveOnClick()}"));',20,
                                             function(){
                                                 $("#grass").show( "slow");
-                                                typed_message(term,'cenario.add(new Stars(x.rand,y.rand);',60,
+                                                typed_message(term,'cenario.add(new Stars(x.rand,y.rand),300);',60,
                                                 function(){
                                                     typed_message(term,'cenario.showSky();',200,
                                                     function(){
