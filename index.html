@@ -105,7 +105,7 @@
             /**
              * Criando e formatando as particulas na tela
              */
-            for(var i = 0; i < 100; i++) {
+            for(var i = 0; i < 300; i++) {
                 pxs[i] = new Circle();
                 pxs[i].reset();
             }
@@ -190,9 +190,9 @@
                  *Define a cor e efeito blink das particulas
                  */
                 g = con.createRadialGradient(this.x,this.y,0,this.x,this.y,(cr <= 0 ? 1 : cr));
-                g.addColorStop(0.0, 'rgba('+red+','+green+','+blue+','+newo+')');
-                g.addColorStop(this.stop, 'rgba('+red *.6+','+green*0.6+','+blue*0.6+','+(newo*.6)+')');
-                g.addColorStop(1.0, 'rgba('+red *.6+','+green*0.6+','+blue*0.6+',0)');
+                g.addColorStop(0.0, 'rgba('+parseInt(red)+','+parseInt(green)+','+parseInt(blue)+','+newo+')');
+                g.addColorStop(this.stop, 'rgba('+parseInt(red *.6)+','+parseInt(green*0.6)+','+parseInt(blue*0.6)+','+(newo*.6)+')');
+                g.addColorStop(1.0, 'rgba('+parseInt(red *.6)+','+parseInt(green*0.6)+','+parseInt(blue*0.6)+',0)');
                 con.fillStyle = g;
                 con.fill();
             }
@@ -230,7 +230,7 @@
 <script>
 
     jQuery(document).ready(function($) {
-
+    var somdigito = new Audio('https://freesound.org/data/previews/149/149760_2703675-lq.mp3');
 
         $(function() {
             var anim = false;
@@ -242,6 +242,9 @@
                     if (message.length > 0) {
                         term.set_prompt('');
                         var interval = setInterval(function() {
+                            somdigito.pause();
+                            somdigito.currentTime = 0;
+                            somdigito.play();
                             term.insert(message[c++]);
                             if (c == message.length) {
                                 clearInterval(interval);
@@ -270,43 +273,343 @@
 
             /**
              * Cenarios
+             * bom aqui coloquei todos os metodos separados
+             * por comando... cada metodo funciona como um comando
              */
-            var play = function (term){
-                for(i=0;i>5;i++){
-                    enrolation(term);
-                }
+            function motivacao(term,next){
+                var lero = ["Bom, no inicio eu comecei um curso de eletrônica",//0
+                    "Foi ai que encontrei a robótica… o que me arrastou para programação, ",//1
+                    "Mas por que ? programação?",//2
+                    "bom ... ",//3
+                    "Programar me permite fazer coisas incríveis… eu realmente amo !",//4
+                    "Posso Mudar... A Forma das coisas",//5
+                    "Posso Mudar... A Cor",//6
+                    "Posso brincar com a fisica, haha posso até tirar até gravidade do espaço  .  .  .  .",//7
+                    "O melhor de tudo, posso mostrar isso para você… "+nome,
+                    "Pronto..."];//8
 
-            };
-            function enrolation(term){
-                term.echo("0 pacotes atualizados, 2 pacotes novos instalados, 0 a serem removidos e 9 não atualizados.");
-                term.echo("É preciso baixar 3.779 kB de arquivos.");
-                term.echo("Depois desta operação, 9.805 kB adicionais de espaço em disco serão usados.");
-                term.echo("plata ou plumbor? [ló compriendo] s");
-                term.echo("Obter:1 http://br.archive.ubuntu.com/ubuntu/ Bemobi/universe geany-common all 1.23.1+dfsg-1 [2.709 kB]");
-                term.echo("Obter:2 http://br.archive.ubuntu.com/ubuntu/ trusty/universe geany i386 1.23.1+dfsg-1 [1.070 kB]");
-                term.echo("Baixados 3.779 kB em 4s (885 kB/s)   ");
-                term.echo("A seleccionar pacote anteriormente não seleccionado Aperte-Play.");
-                term.echo("(Lendo banco de dados ... 533792 ficheiros e directórios actualmente instalados.)");
-                term.echo("Preparing to unpack .../geany-common_1.23.1+dfsg-1_all.deb ...");
-                term.echo("Unpacking geany-common (1.23.1+dfsg-1) ...");
-                term.echo("A seleccionar pacote anteriormente não seleccionado geany.");
-                term.echo("Preparing to unpack .../geany_1.23.1+dfsg-1_i386.deb ...");
-                term.echo("Unpacking geany (1.23.1+dfsg-1) ...");
-                term.echo("Processing triggers for doc-base (0.10.5) ...");
-                term.echo("Processando 1 adicionou arquivo doc-base");
-                term.echo("Registrando documentos com scrollkeeper...");
-                term.echo("Processing triggers for hicolor-icon-theme (0.13-1) ...");
+                /**
+                 * @Todo Seria melhor passar  msg + time, da para colocar
+                 * essas entradas em JSON..
+                 */
+                typed_message(term,lero[0],100,function(){
+                    typed_message(term,lero[1],100,function(){
+                        typed_message(term,lero[2],50,function(){
+                            typed_message(term,lero[3],300,function(){
+                                typed_message(term,lero[4],70,function(){
+                                    tamanhoArco = 20;
+                                    typed_message(term,lero[5],200,function(){
+                                        //Forma das coisas
+                                        //a mudança começa no seguimento
+                                        //prodecessor
+                                        var rand = function() {
+                                            return(Math.floor(Math.random() * 255) + 50);
+                                        };
+                                        var s_star = new Audio('https://freesound.org/data/previews/266/266168_4284968-lq.mp3');
+                                        var t = setInterval(function(){
+                                            red = rand();
+                                            blue = rand();
+                                            green = rand();
+                                            s_star.pause();
+                                            s_star.currentTime = 0;
+                                            s_star.play();
+                                        },200);
+
+                                        typed_message(term,lero[6],200,function(){
+
+                                            // Aqui a está tudo brilhando de varias cores
+                                            typed_message(term,lero[7],100,function(){
+                                                //"gravidade fall hauhsuahuhsa 165,42,42
+                                                gravidade_y = 6;
+                                                typed_message(term,lero[8],200,function(){
+                                                    //finale!
+                                                    typed_message(term,". . . .",500,function(){
+                                                        term.clear();
+                                                        typed_message(term,lero[9],200,function(){
+                                                            gravidade_y=0;
+                                                            for(var i = 0; i < 300; i++) {
+                                                                pxs[i].reset();
+                                                            }
+                                                            next && next();
+                                                        })
+                                                    });
+
+                                                })
+                                            })
+
+                                            })
+                                        })
+
+                                    })
+                                })
+                            })
+                        })
+                    });
+
+
+            }
+
+            function pessoal(term,next){
+
+                var lero = ["Bom, "+nome,
+                    "Eu tenho 22 anos, faço Análise e desenvolvimento de sistemas no instituto infnet",
+                    "Meus hobies basicamente são skate, programação, animação e robótica.",
+                    "ah eu também leio bastante sobre Neurociência  kkkk"];
+
+                var start = 0;
+                var FalaPessoal = function(start){
+                    typed_message(term,lero[start],0,function(){ //velocidade
+                        start++;
+                        if (start == lero.length){
+                            typed_message(term,". . . .",500,function(){
+                                term.clear();
+                                next && next();
+                            });
+                        }
+                        FalaPessoal(start);
+                    });
+                };
+                FalaPessoal(start);
+
+            }
+            function apt_get_update(term,next){
+
+
+                var lero = [
+                    "0 pacotes atualizados, 2 pacotes novos instalados, 0 a serem removidos e 9 não atualizados.",
+                    "É preciso baixar 3.779 GB de arquivos.",
+                    "Depois desta operação, 9.805 GB adicionais de espaço em disco serão usados.",
+                    "plata ou plumo? [ló compriendo] s",
+                    "Obter:1 https://br.linkedin.com/in/isvaldo-fernandes-4a006239 Bemobi/universe geany-common all 1.23.1+dfsg-1 [2.709 kB]",
+                    "Obter:2 http://stackoverflow.com/users/4389469/isvaldo-fernandes trusty/universe geany i386 1.23.1+dfsg-1 [1.070 kB]",
+                    "Obter:3 https://github.com/isvaldo/Ola_Bemobenses trusty/universe isvaldo.slice('') i386 1.23.1+dfsg-1 [1.070 kB]",
+                    "Baixados 3.779 kB em 4s (885 kB/s)   ",
+                    "A seleccionar pacote anteriormente não seleccionado Aperte-Play.",
+                    "(Lendo banco de dados ... 533792 ficheiros e directórios actualmente instalados.)",
+                    "Preparing to unpack .../isvaldo-perfil_1.23.1+dfsg-1_all.deb ...",
+                    "Unpacking isvaldo-perfil(1.23.1+dfsg-1) ...",
+                    "A seleccionar pacote anteriormente não seleccionado isvaldo.packing.",
+                    "Preparing to unpack .../geany_1.23.1+dfsg-1_i386.deb ...",
+                    "Unpacking isvaldo (1.23.1+dfsg-1) ...",
+                    "Processing triggers for doc-base (0.10.5) ...",
+                    "Processando 1 adicionou arquivo doc-base",
+                    "Registrando documentos com scrollkeeper...",
+                    "Processing triggers for hicolor-icon-theme (0.13-1) ..."];
+
+                var start = 0;
+                var simulaProcess = function(start){
+                    typed_message(term,lero[start],0,function(){
+                        start++;
+                        console.log(lero[start],start,lero.length);
+                        if (start == lero.length){
+                            typed_message(term,". . . .",500,
+                            function(){
+                                term.clear();
+                                next && next();
+                            });
+                        }
+                        simulaProcess(start);
+                    });
+                };
+                simulaProcess(start);
+
+            }
+
+            function conhecimento(term,next) {
+                var lero = ["Meu conhecimento em programação ?",
+                    "Acho que tudo se resume a",
+                    " ",
+                    "Python      (|||||||||||   )",
+                    "php         (|||||||||     )",
+                    "Java        (||||||||      )",
+                    "C#          (|||||||       )",
+                    "JavaScript  (|||||         )",
+                    " ",
+                    "Outra skill de se orgulhar ?",
+                    " ",
+                    " ",
+                    "LL         IIIII    NN   NN    UU   UU    XX    XX ",
+                    "LL          III     NNN  NN    UU   UU     XX  XX  ",
+                    "LL          III     NN N NN    UU   UU      XXXX   ",
+                    "LL          III     NN  NNN    UU   UU     XX  XX  ",
+                    "LLLLLLL    IIIII    NN   NN     UUUUU     XX    XX "
+                ];
+
+                var start = 0;
+                term.clear();
+                var FalaConhecimento = function(start){
+                    typed_message(term,lero[start],40,function(){ //velocidade
+                        start++;
+                        if (start == lero.length){
+                            typed_message(term,". . . .",500,function(){
+                                term.clear();
+                                next && next();
+                            });
+                        }
+                        FalaConhecimento(start);
+                    });
+                };
+                FalaConhecimento(start);
 
             }
 
             function help(term){
 
             }
+
+            /**
+             * Escreve na tela os fragmementos de
+             * junior estagio e pleno... em sincronia
+             */
+            function profissional(term,next){
+                typed_message(term,"Bom... Eu programo a quase 4 anos profissionalmente",100,function(){
+                    typed_message(term,"Eu já fui...",150,function(){
+                        junior(term,function(){
+                            estagio(term,function(){
+                                pleno(term,function(){
+                                    typed_message("Hoje procuro um lugar como a Bemobi, uma empresa cheia de oportunidades.",80,
+                                    function(){
+                                        typed_message(term,"Não é a minha primeira tentativa nessa empresa, e se necessário não vai ser a ultima haha.",80,
+                                                function(){
+                                                    typed_message(term,". . . .",400,function(){
+                                                        term.clear();
+                                                        next && next();
+                                                    });
+
+                                                })
+                                    })
+                                })
+                            })
+                        })
+
+
+
+                    })
+                })
+            }
+            function junior(term,next) {
+                var junior = ["Programador Junior,",
+                    "                 [Medksaude]",
+                    "# Conheci o Linux  s3",
+                    "# Participei de uma equipe incrível de desenvolvimento",
+                    "# Aprendi a trabalhar em equipe"];
+
+                var start = 0;
+                term.clear();
+                var FalaJunior = function(start){
+                    typed_message(term,junior[start],70,function(){ //velocidade
+                        start++;
+                        if (start == junior.length){
+                            typed_message(term,". . . .",400,function(){
+                                term.clear();
+                                next && next();
+                            });
+                        }
+                        FalaJunior(start);
+                    });
+                };
+                FalaJunior(start);
+            }
+            function estagio(term,next) {
+                var estagio = [
+                    "-> Estagiário",
+                    "                 [Xerox]",
+                    "# Conheci como é uma empresa de grande porte",
+                    "# Aprendi um pouco sobre Criptografia",
+                    "# Descobri que dar Suporte ao usuário é algo terrível",
+                    "# Implementei meu primeiro sistema 100% sozinho (:"];
+
+                var start = 0;
+                term.clear();
+                var FalaEstagio = function(start){
+                    typed_message(term,estagio[start],70,function(){ //velocidade
+                        start++;
+                        if (start == estagio.length){
+                            typed_message(term,". . . .",400,function(){
+                                term.clear();
+                                next && next();
+                            });
+                        }
+                        FalaEstagio(start);
+                    });
+                };
+                FalaEstagio(start);
+            }
+            function pleno(term,next){
+                var pleno = [ "->Programador pleno",
+                    "                 [Kappius]",
+                    "# Responsavel pela Infra (EC2, ElastiCache,  RDS, S3, Elastic Beanstalk)",
+                    "# Manutenção",
+                    "# Desenvolvimento Software",
+                    "# Suporte ao usuário",
+                    "# Design",
+                    "# Teste Software com Unittest, Mocks, Selenium",
+                    "# Relatórios",
+                    "# Data mining",
+                    "# Importação da base",
+                    "# DBA"
+                ];
+
+                var start = 0;
+                term.clear();
+                var FalaPleno = function(start){
+                    typed_message(term,pleno[start],40-(start*2),function(){ //velocidade
+                        start++;
+                        if (start == pleno.length){
+                            typed_message(term,"# Ah claro, eu também fazia o café...",120,function(){
+                                typed_message(term,". . . .",400,function() {
+                                    term.clear();
+                                    next && next();
+                                })
+                            });
+                        }
+                        FalaPleno(start);
+                    });
+                };
+                FalaPleno(start);
+
+            }
+
+            function bemobi(term,next){
+                var bemobi = ["Há pouco tempo, eu imaginava a Bemobi como uma produtora de software (mobile)",
+                    "Eu estava errado, há muitos outros serviços ligados a distribuição de conteúdo de forma estratégica.",
+                    "Algo muito muito maior do que eu imaginava...",
+                    "O que mais me chama atenção neles de verdade é a forma de trabalhar no ciclo de desenvolvimento",
+                    "um  ambiente descontraído e produtivo, muita preocupação com a qualidade e testes",
+                    "...antes de fazer deploy… teste! sem testar sem deploy xD.",
+                    " ",
+                    "Atualmente meu objetivo é ser uma mente irrequieta e criativa",
+                    "Circulando pelos corredores da Bemobi ",
+                    " ",
+                    "Acredito eu que só falta um passo!"]
+            }
+
+            function introducao(term){
+                typed_message(term, "Olá tudo bem ?", 150, function() {
+                    typed_message(term, "Bom, antes de fazer essa apresentação...",0,
+                            function() {
+                                typed_message(term, "Eu gostaria de conhecer você", 0,
+                                        function(){
+                                            typed_prompt(term,"Qual é o seu primeiro nome?:",0),
+                                                    function(){
+                                            };
+                                        });
+                            });
+                });
+            }
             var achouNome=false;
             var nome="";
             $('#terminal').terminal(function(cmd, term) {
 
                 if(achouNome == false) {
+                    if(!isNaN(cmd)){
+                        term.echo("Hmm, um numero?, vamos lá, entre na brincadeira (:", {
+                            finalize: function(div) {
+                                div.css("color", "red");
+                            }});
+                        return;
+                    }
+
                     term.clear();
                     nome = cmd;
                     var nomes = [];
@@ -315,39 +618,57 @@
                             nomes.push(value.name);
                         }
                     });
+                    var resposta="";
 
-                    if (nomes.length == 1) {
-                        term.echo("Ah olá " + nomes[0]);
-                        term.echo("acho que vi seu nome no desafio!!");
-                    }
-                    else if (nomes.length > 1) {
-                        term.echo("Hmm, existem "+nomes.length+" pessoas no grupo com esse nome,acho que é...");
-                        $.each(nomes,function(index,value){
-                           term.echo(value);
-                        });
+
+                    if (nomes.length > 1) {
+                        resposta = resposta + "Hmm, existem "+nomes.length+" pessoas no grupo com esse nome,acho que vi...";
+
+                        var listar = function (nomes,term) {
+                            $.each(nomes, function (index, value) {
+                                term.echo(value);
+                            });
+                        }
+
+                    }else if (nomes.length == 1) {
+                        resposta = resposta +"Ah olá " + nomes[0] +", acho que vi seu nome no desafio!!";
                     }else if (nome == "isvaldo"){
-                        term.echo("Opa ? Eu também tenho esse nome estranho !");
+                        resposta = resposta +"Opa ? Eu também tenho esse nome estranho!";
+                    }else if (nomes.length == 1) {
+                        resposta = resposta +"Ah olá " + nomes[0] +", acho que vi seu nome no desafio!!";
                     }
                     else{
-                        term.echo("Acho que não vi seu nome no desafio, muito prazer "+nome);
+                       resposta = "Acho que não vi seu nome no desafio, muito prazer "+nome;
                     }
-                    typed_message(term,"ok "+nome+" vamos começar !!!",150,function(){
-                        term.clear();
-                        term.echo("Digite 'play' para iniciar, ou help ver a lista de comandos");
+                    typed_message(term, resposta, 70, function(){
+
+                        if (nomes.length > 1){
+                            listar(nomes,term);
+                        }
+
+                        typed_message(term, "Digite 'play' para iniciar, ou help ver a lista de comandos",50,function(){
+                            term.echo(" ");
+                            term.set_prompt('Root@'+nome+'/home/root/#');
+                        });
+
 
                     });
+
                     achouNome=true;
-                    term.echo("Digite 'play' para iniciar, ou help ver a lista de comandos");
-                    
+                }
+
+                if (cmd == "help"){
+                    apt_get_update(term);
+                }
+
+                if (cmd == "play"){
+                    profissional(term);
                 }
 
 
 
 
 
-                $("#pixie").show( "slow");
-                $("#grass").show( "slow");
-                $("#mountains").show( "slow");
 
             }, {
                 name: 'apresentacao',
@@ -356,22 +677,38 @@
                 height: 300,
                 onInit: function(term) {
                     // Apresentação inicial
-                    var msg = "Olá tudo bem ?";
-                    typed_message(term, msg, 0, function() {
+                    //somdigito=true;
+                    term.echo("Terminal:");
+                    typed_message(term,'Cenario cenario = new Cenario("javascript");       ',0,
+                            function(){
+                                typed_message(term,'cenario.add(new Mountain("parallax");',0,
+                                        function(){
+                                            $("#mountains").show( "slow");
+                                            typed_message(term,'cenario.add(new Grass("function (){moveOnClick()}");',0,
+                                            function(){
+                                                $("#grass").show( "slow");
+                                                typed_message(term,'cenario.add(new Stars(x.rand,y.rand);',60,
+                                                function(){
+                                                    typed_message(term,'cenario.showSky();',200,
+                                                    function(){
+                                                        new Audio('https://freesound.org/data/previews/324/324445_2465261-lq.mp3').play();
+                                                        $("#pixie").show( "slow");
+                                                        //Continue Logic
 
-                        typed_message(term, "Bom, antes de fazer essa apresentação...",2,
-                                function() {
-                                    typed_message(term, "Eu gostaria de conhecer você", 2,
-                                    function(){
-                                        typed_prompt(term,"Qual é o seu primeiro nome?:",2), function(){
-
-                                        };
-                                    });
+                                                        typed_message(term,'exit & start apresentacao',200,
+                                                        function(){
+                                                            term.echo("");
+                                                            typed_message(term,". . . .",400,
+                                                            function(){
+                                                                term.clear();
+                                                                introducao(term);
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                            });
                                 });
-
-                    });
-
-
+                            });
                 },
                 keydown: function(e) {
                     //disable keyboard when animating
