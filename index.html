@@ -6,11 +6,23 @@
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.mousewheel-min.js"></script>
     <script src="js/jquery.terminal-min.js"></script>
+
+    <script>
+        var SomDeDigito = new Audio('sounds/keyboard.mp3');
+        var SomDeError = new Audio('sounds/erro.mp3');
+        var SomDeSky = new Audio('sounds/sky.mp3');
+        var SomDeEstrela = new Audio('sounds/estrela.mp3');
+        var SomDeSkyFall = new Audio('sounds/skyFall.mp3');
+        var anim = false; // Quando tem animação, o teclado fica desabilitado
+    </script>
+
     <script src="js/star_wars.js"></script>
     <script src="js/facebook.js"></script>
+
     <link href="css/jquery.terminal.css" rel="stylesheet"/>
     <link href="css/style.css" rel="stylesheet"/>
     <script src="js/sky.js"></script>
+    <script src="js/cenario.js"></script>
 </head>
 <body>
 
@@ -29,588 +41,61 @@
 
 <script>
     jQuery(document).ready(function($) {
-    var somdigito = new Audio('sounds/keyboard.mp3');
-
-        $(function() {
-            var anim = false;
-            function typed(finish_typing) {
-                return function(term, message, delay, finish) {
-                    anim = true;
-                    var prompt = term.get_prompt();
-                    var c = 0;
-                    if (message.length > 0) {
-                        term.set_prompt('');
-                        var interval = setInterval(function() {
-                            somdigito.pause();
-                            somdigito.currentTime = 0;
-                            somdigito.play();
-                            term.insert(message[c++]);
-                            if (c == message.length) {
-                                clearInterval(interval);
-                                // execute in next interval
-                                setTimeout(function() {
-                                    // swap command with prompt
-                                    finish_typing(term, message, prompt);
-                                    anim = false
-                                    finish && finish();
-                                }, delay);
-                            }
-                        }, delay);
-                    }
-                };
-            }
-            var typed_prompt = typed(function(term, message, prompt) {
-                // swap command with prompt
-                term.set_command('');
-                term.set_prompt(message + ' ');
-            });
-            var typed_message = typed(function(term, message, prompt) {
-                term.set_command('');
-                term.echo(message);
-                term.set_prompt(prompt);
-            });
-
             /**
              * Cenarios
              * bom aqui coloquei todos os metodos separados
              * por comando... cada metodo funciona como um comando
              */
-            function motivacao(term,next){
-                var lero = ["Minha paixão começou com eletrônica, Resistores,leds,diodos,Uhul!",//0
-                    "Então encontrei a robótica… o que me levou a programação, ",//1
-                    "Mas por que ? programação?",//2
-                    "bom ... ",//3
-                    "Programar me permite fazer coisas incríveis… eu realmente amo !",//4
-                    "Posso Mudar... A Forma,Velocidade",//5
-                    "Posso Mudar... A Cor, O Som ...",//6
-                    "Posso brincar com a fisica, haha posso até tirar até gravidade do espaço . . .",//7
-                    "O melhor de tudo, posso mostrar isso para você… "+nome,
-                    "Pronto... também posso fazer isso xD"];//8
-
-                /**
-                 * @Todo Seria melhor passar  msg + time, da para colocar
-                 * essas entradas em JSON..
-                 */
-                typed_message(term,lero[0],100,function(){
-                    typed_message(term,lero[1],100,function(){
-                        typed_message(term,lero[2],50,function(){
-                            typed_message(term,lero[3],300,function(){
-                                typed_message(term,lero[4],70,function(){
-                                    tamanhoArco = 20;
-                                    typed_message(term,lero[5],150,function(){
-                                        //Forma das coisas
-                                        //a mudança começa no seguimento
-                                        //prodecessor
-                                        var rand = function() {
-                                            return(Math.floor(Math.random() * 255) + 50);
-                                        };
-                                        var s_star = new Audio('https://freesound.org/data/previews/266/266168_4284968-lq.mp3');
-                                        var t = setInterval(function(){
-                                            red = rand();
-                                            blue = rand();
-                                            green = rand();
-                                            s_star.pause();
-                                            s_star.currentTime = 0;
-                                            s_star.play();
-                                        },200);
-
-                                        typed_message(term,lero[6],150,function(){
-
-                                            // Aqui a está tudo brilhando de varias cores
-                                            typed_message(term,lero[7],100,function(){
-                                                //"gravidade fall hauhsuahuhsa
-                                                gravidade_y = 6;
-                                                new Audio('https://freesound.org/data/previews/324/324587_2465261-lq.mp3').play();
-                                                typed_message(term,lero[8],150,function(){
-                                                    //finale!
-                                                    typed_message(term,". . . .",500,function(){
-                                                        term.clear();
-                                                        typed_message(term,lero[9],120,function(){
-                                                            gravidade_y=0;
-                                                            for(var i = 0; i < 300; i++) {
-                                                                pxs[i].reset();
-                                                            }
-                                                            clearInterval(t);
-                                                            next && next();
-                                                        })
-                                                    });
-
-                                                })
-                                            })
-
-                                            })
-                                        })
-
-                                    })
-                                })
-                            })
-                        })
-                    });
-
-
-            }
-            function apt_get_update(term,next){
-
-
-                var lero = [
-                    "0 pacotes atualizados, 2 pacotes novos instalados, 0 a serem removidos e 9 não atualizados.",
-                    "É preciso baixar 3.779 GB de arquivos.",
-                    "Depois desta operação, 9.805 GB adicionais de espaço em disco serão usados.",
-                    "plata ou plumo? [ló compriendo] s",
-                    "Obter:1 https://br.linkedin.com/in/isvaldo-fernandes-4a006239 Bemobi/universe geany-common all 1.23.1+dfsg-1 [2.709 kB]",
-                    "Obter:2 http://stackoverflow.com/users/4389469/isvaldo-fernandes trusty/universe geany i386 1.23.1+dfsg-1 [1.070 kB]",
-                    "Obter:3 https://github.com/isvaldo/Ola_Bemobenses trusty/universe isvaldo.slice('') i386 1.23.1+dfsg-1 [1.070 kB]",
-                    "Baixados 3.779 kB em 4s (885 kB/s)   ",
-                    "A seleccionar pacote anteriormente não seleccionado Aperte-Play.",
-                    "(Lendo banco de dados ... 533792 ficheiros e directórios actualmente instalados.)",
-                    "Preparing to unpack .../isvaldo-perfil_1.23.1+dfsg-1_all.deb ...",
-                    "Unpacking isvaldo-perfil(1.23.1+dfsg-1) ...",
-                    "A seleccionar pacote anteriormente não seleccionado isvaldo.packing.",
-                    "Preparing to unpack .../geany_1.23.1+dfsg-1_i386.deb ...",
-                    "Unpacking isvaldo (1.23.1+dfsg-1) ...",
-                    "Processing triggers for doc-base (0.10.5) ...",
-                    "Processando 1 adicionou arquivo doc-base",
-                    "Registrando documentos com scrollkeeper...",
-                    "Processing triggers for hicolor-icon-theme (0.13-1) ..."];
-
-                var start = 0;
-                var simulaProcess = function(start){
-                    typed_message(term,lero[start],2,function(){
-                        start++;
-                        if (start == lero.length){
-                            typed_message(term,". . . .",500,
-                            function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-
-                        simulaProcess(start);
-
-                    });
-                };
-                simulaProcess(start);
-
-            }
-
-            function conhecimento(term,next) {
-                var lero = ["Meu conhecimento em programação ?",
-                    "Acho que tudo se resume a",
-                    " ",
-                    "Python      (|||||||||||   )",
-                    "php         (|||||||||     )",
-                    "Java        (||||||||      )",
-                    "C#          (|||||||       )",
-                    "JavaScript  (|||||         )",
-                    " ",
-                    "Outra skill de se orgulhar ?",
-                    " ",
-                    " ",
-                    "LL         IIIII    NN   NN    UU   UU    XX    XX ",
-                    "LL          III     NNN  NN    UU   UU     XX  XX  ",
-                    "LL          III     NN N NN    UU   UU      XXXX   ",
-                    "LL          III     NN  NNN    UU   UU     XX  XX  ",
-                    "LLLLLLL    IIIII    NN   NN     UUUUU     XX    XX "
-                ];
-
-                var start = 0;
-                term.clear();
-                var FalaConhecimento = function(start){
-                    typed_message(term,lero[start],60-(start*2),function(){ //velocidade
-                        start++;
-                        if (start == lero.length){
-                            typed_message(term,". . . .",500,function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-                        FalaConhecimento(start);
-                    });
-                };
-                FalaConhecimento(start);
-
-            }
-
-            function help(term){
-                term.echo("");
-                term.echo("play -> executa todos os comandos um a um");
-                term.echo("pessoal -> resumo pessoal");
-                term.echo("motivacao -> resumo do que me inspira...");
-                term.echo("conhecimento -> resumo das minhas skills");
-                term.echo("profissional -> resumo pessoal");
-                term.echo("bemobi -> resumo pessoal");
-                term.echo("qualidade -> resumo pessoal");
-            }
-
-            /**
-             * Escreve na tela os fragmementos de
-             * junior estágio e pleno... em sincronia
-             */
-            function profissional(term,next){
-                typed_message(term,"Bom... Eu programo a quase 4 anos profissionalmente",100,function(){
-                    typed_message(term,"Eu já fui...",150,function(){
-                        junior(term,function(){
-                            estagio(term,function(){
-                                pleno(term,function(){
-                                    typed_message(term,"Hoje procuro um lugar como a Bemobi, uma empresa cheia de oportunidades.",80,
-                                    function(){
-                                        typed_message(term,"Não é a minha primeira tentativa nessa empresa, e se necessário não vai ser a ultima!",80,
-                                                function(){
-                                                    typed_message(term,". . . .",400,function(){
-                                                        term.clear();
-                                                        next && next();
-                                                    });
-
-                                                })
-                                    })
-                                })
-                            })
-                        })
-
-
-
-                    })
-                })
-            }
-            function junior(term,next) {
-                var junior = ["Programador Junior,",
-                    "                 [Medksaude]",
-                    "# Conheci o Linux  s3",
-                    "# Participei de uma equipe incrível de desenvolvimento",
-                    "# Aprendi a trabalhar em equipe"];
-
-                var start = 0;
-                term.clear();
-                var FalaJunior = function(start){
-                    typed_message(term,junior[start],70,function(){ //velocidade
-                        start++;
-                        if (start == junior.length){
-                            typed_message(term,". . . .",400,function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-                        FalaJunior(start);
-                    });
-                };
-                FalaJunior(start);
-            }
-            function estagio(term,next) {
-                var estagio = [
-                    "-> Estagiário",
-                    "                 [Xerox]",
-                    "# Conheci como é uma empresa de grande porte",
-                    "# Aprendi um pouco sobre Criptografia",
-                    "# Descobri que dar Suporte para usuários é algo terrível",
-                    "# Implementei meu primeiro sistema 100% sozinho (:"];
-
-                var start = 0;
-                term.clear();
-                var FalaEstagio = function(start){
-                    typed_message(term,estagio[start],70,function(){ //velocidade
-                        start++;
-                        if (start == estagio.length){
-                            typed_message(term,". . . .",400,function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-                        FalaEstagio(start);
-                    });
-                };
-                FalaEstagio(start);
-            }
-            function pleno(term,next){
-                var pleno = [ "->Programador pleno",
-                    "                 [Kappius]",
-                    "# Responsável pela Infra (EC2, ElastiCache,  RDS, S3, Elastic Beanstalk)",
-                    "# Manutenção",
-                    "# Desenvolvimento Software",
-                    "# Suporte ao usuário",
-                    "# Design",
-                    "# Teste Software com Unittest, Mocks, Selenium",
-                    "# Relatórios",
-                    "# Data mining",
-                    "# Importação da base",
-                    "# DBA"
-                ];
-
-                var start = 0;
-                term.clear();
-                var FalaPleno = function(start){
-                    typed_message(term,pleno[start],40-(start*2),function(){ //velocidade
-                        start++;
-                        if (start == pleno.length){
-                            typed_message(term,"# Ah claro, eu também fazia o café...",120,function(){
-                                typed_message(term,". . . .",400,function() {
-                                    term.clear();
-                                    next && next();
-                                })
-                            });
-                        }
-                        FalaPleno(start);
-                    });
-                };
-                FalaPleno(start);
-
-            }
-            function bemobi(term,next){
-                var bemobi = ["Há pouco tempo, eu imaginava a Bemobi como",
-                    "Uma produtora de software (mobile)",
-                    "Eu estava errado, há muitos outros serviços de ",
-                    "Distribuição de conteúdo de forma estratégica.",
-                    "Algo muito muito maior do que eu imaginava...",
-                        " ",
-                    "O que mais me chama atenção neles de verdade é ",
-                    "A forma de trabalhar no ciclo de desenvolvimento",
-                    "um  ambiente descontraído e produtivo",
-                    "muita preocupação com a qualidade e testes",
-                    "...antes de fazer deploy… teste! sem testar sem deploy xD.",
-                    " ",
-                    "Atualmente meu objetivo é ser uma mente irrequieta e criativa",
-                    "Circulando pelos corredores da Bemobi ",
-                    " ",
-                    "Acredito eu que só falta um passo!"];
-
-                var start = 0;
-                term.clear();
-                var FalaBemobi = function(start){
-                    typed_message(term,bemobi[start],70,function(){
-                        start++;
-                        if (start == bemobi.length){
-                            typed_message(term,". . . .",600,function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-                        FalaBemobi(start);
-                    });
-                };
-                FalaBemobi(start);
-
-
-
-            }
-            function qualidade(term,next){
-                var qualidade = [
-                    "Qualidade de software...",
-                    "Esse termo é muito interessante...",
-                    "Parece que todo dia eu tenho uma nova concepção do seu real significado, seria apenas...",
-                    "Testes automatizados?",
-                    "Variáveis com nomes significativos?",
-                    "Padrões de projeto?",
-                    "Baixo acoplamento?",
-                    "Tudo isso junto?",
-                    " ",
-                    "Qual é o significado de um software de qualidade?",
-                    "Aqui vai a minha resposta pessoal",
-                    " ",
-                    "Um software de qualidade é um software que foi escrito para pessoas em primeiro lugar",
-                    "Um código é de qualidade quando não é estático",
-                    "Não depende de nehuma constante estática voadora no escopo global kkkkkk.",
-                    "É de qualidade quando não tem um windows executando sua aplicação...",
-                    "Um sistema é de qualidade, quando seu cliente está feliz com sua entrega",
-                    "é quando você NÃO tem certeza de nada, qualidade é uma busca sem fim pela segurança",
-                    "É um pouco irônico, esse código que está concebendo essas palavras",
-                    "foi feito em Javascript, o desenvolvedor desse código não tem muita pratica com esse Bixo",
-                    "então.., esse código foi realmente um desafio de terminar",
-                    "Acredito que ele é um excelente exemplo de código sem qualidade",
-                    "Prazos apertados, terras desconhecidas, tudo isso é um grande perigo para a elaboração de código ruim"
-                ];
-
-                var start = 0;
-                term.clear();
-                var FalaQualidade = function(start){
-                    typed_message(term,qualidade[start],100,function(){
-                        start++;
-                        if (start == qualidade.length){
-                            typed_message(term,". . . .",500,function(){
-                                term.clear();
-                                next && next();
-                            });
-                        }
-                        FalaQualidade(start);
-                    });
-                };
-                FalaQualidade(start);
-
-            }
-            function introducao(term){
-                typed_message(term, "Olá tudo bem ?", 150, function() {
-                    typed_message(term, "Bom, antes de fazer essa apresentação...",50,
-                            function() {
-                                typed_message(term, "Eu gostaria de conhecer você", 50,
-                                        function(){
-                                            typed_prompt(term,"Qual é o seu primeiro nome?:",50,
-                                                    function(){
-                                            });
-                                        });
-                            });
-                });
-            }
-            var achouNome=false;
             var nome="";
             $('#terminal').terminal(function(cmd, term) {
 
-                if(achouNome == false) {
-                    if(!isNaN(cmd) || cmd.length<3){
-                        new Audio('sounds/erro').play();
-                        term.echo("Hmm não é um nome..., vamos lá, entre na brincadeira (:", {
-                            finalize: function(div) {
-                                div.css("color", "red");
-                            }});
-                        return;
-                    }
-
-                    term.clear();
-                    nome = cmd;
-                    var nomes = [];
-                    $.each(data.data, function (index, value) {
-                        if (cmd == value.name.split(" ")[0]) {
-                            nomes.push(value.name);
-                        }
-                    });
-                    var resposta="";
-
-
-                    if (nomes.length > 1) {
-                        resposta = resposta + "Hmm, existem "+nomes.length+" pessoas no grupo com esse nome,acho que vi...";
-
-                        var listar = function (nomes,term) {
-                            $.each(nomes, function (index, value) {
-                                term.echo(value);
-                            });
-                        }
-
-                    }else if (nomes.length == 1) {
-                        resposta = resposta +"Ah olá " + nomes[0] +", acho que vi seu nome no desafio!!";
-                    }else if (nome == "isvaldo"){
-                        resposta = resposta +"Opa ? Eu também tenho esse nome estranho!";
-                    }else if (nomes.length == 1) {
-                        resposta = resposta +"Ah olá " + nomes[0] +", acho que vi seu nome no desafio!!";
-                    }
-                    else{
-                       resposta = "Acho que não vi seu nome no desafio, muito prazer "+nome;
-                    }
-                    typed_message(term, resposta, 70, function(){
-
-                        if (nomes.length > 1){
-                            listar(nomes,term);
-                        }
-
-                        typed_message(term, "Digite 'play' para iniciar, ou help ver a lista de comandos",50,function(){
-                            term.echo(" ");
-                            term.set_prompt('Root@'+nome+'/home/root/#');
-                        });
-
-
-                    });
-
-                    achouNome=true;
+                //filtra/formata a entrada
+                cmd = cmd.toLowerCase();
+                cmd = cmd.split(" ")[0];
+                if (cmd.length<3){
+                    return false;
                 }
+                if (nome == ""){
+                    nome = advinhaNome(term,cmd);
+                    return false;
+                }
+                //Compartilha o nome pelo contexto
+                // pode ser acessado de qualquer parte do escopo agora
+               term['usuario'] = nome;
+                //Comandos
 
-
-
-                switch (cmd.toLowerCase()){
-                    case "play":
-                        apt_get_update(term,function(){
-                            pessoal(term,function(){
-                                motivacao(term,function(){
-                                    conhecimento(term,function(){
-                                        profissional(term,function(){
-                                            bemobi(term,function(){
-                                                qualidade(term,function(){
-                                                    typed_message(term,"Muito obrigado ! Boa sorte pessoal!",100,function(){
-
-                                                        typed_message(term, "Digite 'play' para iniciar, ou help ver a lista de comandos",50,function(){
-                                                            term.echo(" ");
-                                                            term.echo("Linkedin: https://br.linkedin.com/in/isvaldo-fernandes-4a006239");
-                                                            term.echo(" ");
-                                                            term.echo("Source do projeto: https://github.com/isvaldo/Ola_Bemobenses");
-                                                            term.set_prompt('Root@'+nome+'/home/root/#');
-                                                            term.echo(" ");
-                                                            term.echo(" ");
-                                                        });
-                                                    });
-                                                })
-                                            })
-
-                                        })
-                                    })
-                                })
-
-                            });
-                        });
-                        break;
-                    case "help":
+                    switch (cmd){
+                        case "play":
+                        case "aperte o play":
+                            playALl(term);
+                            break;
+                        case "help":
                             help(term);
-                        break;
-                    case "pessoal":
+                            break;
+                        case "pessoal":
                             pessoal(term);
-                        break;
-                    case "motivacao":
-                        movivacao(term);
-                        break;
-                    case  "conhecimento":
-                        conhecimento(term);
-                        break;
-                    case   "profissional":
-                        profissional(term);
-                        break;
-                    case "bemobi":
-                        bemobi(term);
-                        break;
-                    case "qualidade":
-                        qualidade(term);
-                        break;
-                    case "filme":
-                        var frames = [];
-                        var LINES_PER_FRAME = 14;
-                        var DELAY = 67;
-                        var lines = star_wars.length;
-                        for (var i=0; i<lines; i+=LINES_PER_FRAME) {
-                            frames.push(star_wars.slice(i, i+LINES_PER_FRAME));
-                        }
-                        var stop = false;
-                    function play(term, delay) {
-                        var i = 0;
-                        var next_delay;
-                        if (delay == undefined) {
-                            delay = DELAY;
-                        }
-                        function display() {
-                            if (i == frames.length) {
-                                i = 0;
-                            }
-                            term.clear();
-                            if (frames[i][0].match(/[0-9]+/)) {
-                                next_delay = frames[i][0] * delay;
-                            } else {
-                                next_delay = delay;
-                            }
-                            term.echo(frames[i++].slice(1).join('\n')+'\n');
-                            if (!stop) {
-                                setTimeout(display, next_delay);
-                            } else {
-                                term.clear();
-                                greetings(term);
-                                i = 0;
-                            }
-                        }
-                        display();
-
+                            break;
+                        case "motivacao":
+                            movivacao(term);
+                            break;
+                        case  "conhecimento":
+                            conhecimento(term);
+                            break;
+                        case   "profissional":
+                            profissional(term);
+                            break;
+                        case "bemobi":
+                            bemobi(term);
+                            break;
+                        case "qualidade":
+                            qualidade(term);
+                            break;
+                        case "filme":
+                            filme(term);
+                            break;
+                        default:
+                            break;
                     }
-                        stop = false;
-                            play(term);
-                        break;
-                    default:
-                        break;
-                }
-
-
-
-
-
 
             }, {
                 name: 'apresentacao',
@@ -618,39 +103,7 @@
                 width: 800,
                 height: 300,
                 onInit: function(term) {
-                    // Apresentação inicial
-                    //somdigito=true;
-                    term.echo("Terminal:");
-                    typed_message(term,'Cenario cenario = new Cenario("javascript");       ',20,
-                            function(){
-                                typed_message(term,'cenario.add(new Mountain("parallax"));',50,
-                                        function(){
-                                            $("#mountains").show( "slow");
-                                            typed_message(term,'cenario.add(new Grass("function (){moveOnClick()}"));',20,
-                                            function(){
-                                                $("#grass").show( "slow");
-                                                typed_message(term,'cenario.add(new Stars(x.rand,y.rand),300);',60,
-                                                function(){
-                                                    typed_message(term,'cenario.showSky();',200,
-                                                    function(){
-                                                        $("#pixie").show( "slow");
-                                                        new Audio('https://freesound.org/data/previews/324/324445_2465261-lq.mp3').play();
-
-                                                        //Continue Logic
-                                                        typed_message(term,'exit & start apresentacao',150,
-                                                        function(){
-                                                            term.echo("");
-                                                            typed_message(term,". . . .",400,
-                                                            function(){
-                                                                term.clear();
-                                                                introducao(term);
-                                                            });
-                                                        });
-                                                    });
-                                                });
-                                            });
-                                });
-                            });
+                   preIntroducao(term);
                 },
                 keydown: function(e) {
                     //disable keyboard when animating
@@ -659,8 +112,6 @@
                     }
                 }
             });
-        });
-
 
     });
 </script>

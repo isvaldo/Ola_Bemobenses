@@ -17,7 +17,7 @@ var red=255;
 var green=255;
 var blue=255;
 var pxs = new Array();
-var rint = 60;
+var rint = 100;
 
 $(document).ready(function(){
     WIDTH = window.innerWidth;
@@ -30,14 +30,19 @@ $(document).ready(function(){
     /**
      * Criando e formatando as particulas na tela
      */
-    for(var i = 0; i < 300; i++) {
+    for(var i = 0; i < 100; i++) {
         pxs[i] = new Circle();
         pxs[i].reset();
     }
+
     /**
-     * definindo repetição dos frames
+     * Apenas demostrando como
+     * seria para colocar esse canvas
+     * em loop.
+     *
+     * ---> setInterval(draw,rint);
      */
-    setInterval(draw,rint);
+
 
     /**
      * Carregando objetos da animação
@@ -75,8 +80,9 @@ function draw() {
         pxs[i].draw();
     }
 }
+
 /**
- * Bloco que define cada particula
+ * "class" que define cada particula
  * @constructor
  */
 function Circle() {
