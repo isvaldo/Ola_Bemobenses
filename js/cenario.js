@@ -426,7 +426,7 @@ function qualidade(term, next) {
         "Escolha nomes coerentes, e sempre atualize a documentação",
         " ",
         "Eu realmente gosto de testar/planejar software, acho que encontrar bug's",
-        "È um grande desafio! não é a minha melhor Habilidade, mas concerteza é uma que eu quero ter"
+        "È um grande desafio! não é a minha melhor Habilidade, mas conserteza é uma que eu quero ter"
 
     ];
 
