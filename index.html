@@ -1,19 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <title>Apresentação</title>
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.mousewheel-min.js"></script>
     <script src="js/jquery.terminal-min.js"></script>
-
+    <script src="js/howler.js"></script>
     <script>
-        var SomDeDigito = new Audio('sounds/keyboard.mp3');
-        var SomDeError = new Audio('sounds/erro.mp3');
-        var SomDeSky = new Audio('sounds/sky.mp3');
-        var SomDeEstrela = new Audio('sounds/estrela.mp3');
-        var SomDeSkyFall = new Audio('sounds/skyFall.mp3');
+
+        /**
+         * HowL Trata a compatibilidade entre navegadores da API de Audio
+         * @type {*|Howl}
+         */
+        var SomDeDigito = new Howl({
+            urls: ['sounds/keyboard.ogg', 'sounds/keyboard.mp3']
+        });
+
+        var SomDeError = new Howl({
+            urls: ['sounds/erro.ogg', 'sounds/erro.mp3']
+        });
+
+        var SomDeSky = new Howl({
+            urls: ['sounds/sky.ogg', 'sounds/sky.mp3']
+        });
+
+        var SomDeEstrela = new Howl({
+            urls: ['sounds/estrela.ogg', 'sounds/estrela.mp3']
+        });
+
+        var SomDeSkyFall = new Howl({
+            urls: ['sounds/skyFall.ogg', 'sounds/skyFall.mp3']
+        });
+
+        var SomDeFilme = new Howl({
+            urls: ['sounds/war.ogg', 'sounds/war.mp3']
+        });
+
         var anim = false; // Quando tem animação, o teclado fica desabilitado
+
+        console.log("UM DESENVOLVEDOR !!!");
+        console.log("Fique tranquilo, não é flash");
+        console.log("Achou bug's ? Reporte para mim por favor: https://github.com/isvaldo/Ola_Bemobenses");
+
     </script>
 
     <script src="js/star_wars.js"></script>
@@ -21,6 +53,7 @@
 
     <link href="css/jquery.terminal.css" rel="stylesheet"/>
     <link href="css/style.css" rel="stylesheet"/>
+    <link rel='shortcut icon' type='image/x-icon' href='img/favicon.ico' />
     <script src="js/sky.js"></script>
     <script src="js/cenario.js"></script>
 </head>
@@ -52,7 +85,13 @@
                 //filtra/formata a entrada
                 cmd = cmd.toLowerCase();
                 cmd = cmd.split(" ")[0];
-                if (cmd.length<3){
+                if (cmd.length<3 || !isNaN(cmd)){
+                    SomDeError.play();
+                    term.echo("Entrada inválida", {
+                        finalize: function (div) {
+                            div.css("color", "red");
+                        }
+                    });
                     return false;
                 }
                 if (nome == ""){
@@ -66,7 +105,7 @@
 
                     switch (cmd){
                         case "play":
-                        case "aperte o play":
+
                             playALl(term);
                             break;
                         case "help":
@@ -103,10 +142,10 @@
                 width: 800,
                 height: 300,
                 onInit: function(term) {
-                   preIntroducao(term);
+                    preIntroducao(term);
                 },
                 keydown: function(e) {
-                    //disable keyboard when animating
+
                     if (anim) {
                         return false;
                     }

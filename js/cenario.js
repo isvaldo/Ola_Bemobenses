@@ -3,10 +3,20 @@
  */
 
 
-function digito(){
-    SomDeDigito.pause();
-    SomDeDigito.currentTime = 0;
-    SomDeDigito.play();
+function digito(speed){
+    if (speed>40){
+        SomDeDigito.play();
+    }else if (speed>10){
+        // 40% chances de executar
+        if(Math.random() >= 0.6){
+            SomDeDigito.play();
+        }
+           }else {
+        // 10% executar
+        if(Math.random() >= 0.91){
+            SomDeDigito.play();
+        }
+    }
 }
 function typed(finish_typing) {
     return function (term, message, delay, finish, song) {
@@ -16,7 +26,7 @@ function typed(finish_typing) {
         if (message.length > 0) {
             term.set_prompt('');
             var interval = setInterval(function () {
-                (!song) && digito();
+                (!song) && digito(delay);
                 term.insert(message[c++]);
                 if (c == message.length) {
                     clearInterval(interval);
@@ -33,7 +43,6 @@ function typed(finish_typing) {
     };
 }
 var typed_prompt = typed(function (term, message, prompt) {
-    // swap command with prompt
     term.set_command('');
     term.set_prompt(message + ' ');
 });
@@ -47,22 +56,25 @@ var typed_message = typed(function (term, message, prompt) {
 function pessoal(term, next) {
     term.clear();
     term.echo("[[guib;white;]Pessoal(self);]");
+    term.echo(" ");
     var lero = ["Bom, "+term.usuario,
-        "Eu tenho 22 anos, faço Análise e desenvolvimento de sistemas no instituto infnet",
-        "Meus hobbies?",
-        "Role de Skate...",
-        "Programação..., ",
-        "Animação ...",
-        "Robotica ...",
+        "Meu nome é isvaldo, eu tenho 22 anos e faço Análise de Sistemas no Infnet",
+        "Eu sou uma pessoa muito interessada por tecnológia e ciência em geral",
+        "Sou muito dedicado, tenho um grande carinho por tudo que faço",
+        "Gosto de pisar no desconhecido, estudo sobre qualquer coisa...",
+        "Sempre que descubro algo interessante, gosto de compartilhar",
+        "Adoro, Robôtica, Animação, Programação e exploração de dados scraping..",
+        "Penso em fazer mestrado .. doutorado etc.. adoro a vida academica/pesquisa",
+        " ",
         "Ahhh eu também leio bastante sobre Neurociência  kkkk"];
 
     var start = 0;
     var FalaPessoal = function (start) {
         //@ ASYNC Nivel 1
-        typed_message(term, lero[start], 100, function () {
+        typed_message(term, lero[start], 110, function () {
             start++;
             if (start == lero.length) {
-                typed_message(term, ". . . .", 500, function () {
+                typed_message(term, ". . . .", 600, function () {
                     term.clear();
                     next && next();
                     return false;
@@ -78,14 +90,15 @@ function pessoal(term, next) {
 //@ ASYNC Nivel 11
 function motivacao(term, next) {
     term.echo("[[guib;white;]Motivacao(self);]");
-    var lero = ["Minha paixão começou com eletrônica, Resistores,leds,diodos,Uhul!",//0
+    term.echo(" ");
+    var lero = ["Minha paixão começou com eletrônica, Resistores, leds, diodos, Uhull",//0
         "Então encontrei a robótica… o que me levou a programação, ",//1
-        "Mas por que ? programação?",//2
-        "bom ... ",//3
+        "O que me deu na cabeça? por que escolhi programação?",//2
+        "Bom ... ",//3
         "Programar me permite fazer coisas incríveis… eu realmente amo !",//4
-        "Posso Mudar... A Forma,Velocidade",//5
+        "Posso criar e modificar qualquer coisa, A quantidade... O tamanho .. observe !",//5
         "Posso Mudar... A Cor, O Som ...",//6
-        "Posso brincar com a fisica, haha posso até tirar até gravidade do espaço . . .",//7
+        "Posso brincar com a fisica, por exemplo, adeus gravidade....",//7
         "O melhor de tudo, posso mostrar isso para você… " + term.usuario,
         "Pronto... também posso fazer isso xD"];//8
 
@@ -117,9 +130,6 @@ function motivacao(term, next) {
                                 red = rand();
                                 blue = rand();
                                 green = rand();
-
-                                SomDeEstrela.pause();
-                                SomDeEstrela.currentTime = 0;
                                 SomDeEstrela.play();
                             }, 200);
                             //@ ASYNC Nivel 7
@@ -179,7 +189,7 @@ function apt_get_update(term, next) {
         "Preparing to unpack .../isvaldo-perfil_1.23.1+dfsg-1_all.deb ...",
         "Unpacking isvaldo-perfil(1.23.1+dfsg-1) ...",
         "A seleccionar pacote anteriormente não seleccionado isvaldo.packing.",
-        "Preparing to (você leu isso?) .../geany_1.23.1+dfsg-1_i386.deb ...",
+        "Preparing to (você leu isso?) .../bemobi_1.23.1+dfsg-1_i386.deb ...",
         "Unpacking isvaldo (1.23.1+dfsg-1) ...",
         "Processing triggers for doc-base (0.10.5) ...",
         "Processando 1 adicionou arquivo doc-base",
@@ -215,7 +225,7 @@ function conhecimento(term, next) {
         "Acho que tudo se resume a",
         " ",
         "Python      (|||||||||||   )",
-        "php         (|||||||||     )",
+        "Php         (|||||||||     )",
         "Java        (||||||||      )",
         "C#          (|||||||       )",
         "JavaScript  (|||||         )",
@@ -253,14 +263,14 @@ function conhecimento(term, next) {
 
 function help(term) {
     term.echo(" ");
-    term.echo("[[guib;white;]play] -> executa todos os comandos um a um");
-    term.echo("[[guib;white;]pessoal] -> resumo pessoal");
-    term.echo("[[guib;white;]motivacao] -> resumo do que me inspira...");
-    term.echo("[[guib;white;]conhecimento] -> resumo das minhas skills");
-    term.echo("[[guib;white;]profissional] -> resumo pessoal");
-    term.echo("[[guib;white;]bemobi]bemobi -> resumo pessoal");
-    term.echo("[[guib;white;]qualidade] -> resumo pessoal");
-    term.echo("[[guib;white;]filme] -> [[guib;red;] Teste ue] ");
+    term.echo("[[guib;white;]play] -> executa todos os comandos recursivamente");
+    term.echo("[[guib;white;]pessoal] -> retorna quem sou");
+    term.echo("[[guib;white;]motivacao] -> retorna a minha inspiração");
+    term.echo("[[guib;white;]conhecimento] -> retorna uma lista de skills");
+    term.echo("[[guib;white;]profissional] -> retorna uma lista de jobs");
+    term.echo("[[guib;white;]bemobi] -> retorna minha palavras sobre a bemobi");
+    term.echo("[[guib;white;]qualidade] -> retorna um pouco do que sei sobre o assunto");
+    term.echo("[[guib;white;]filme] -> [[guib;red;] Retorna um classico que quero compartilhar]");
 }
 
 /**
@@ -296,9 +306,11 @@ function profissional(term, next) {
 function junior(term, next) {
     var junior = ["Programador Junior,",
         "                 [Medksaude]",
-        "# Conheci o Linux  s3",
-        "# Participei de uma equipe incrível de desenvolvimento",
-        "# Aprendi a trabalhar em equipe"];
+        "# Conheci o Linux",
+        "# Participei de uma equipe incrível",
+        "# Aprendi a trabalhar em equipe",
+        "# Comecei com Python/jquery/js"
+    ];
 
     var start = 0;
     term.clear();
@@ -378,20 +390,13 @@ function pleno(term, next) {
 function bemobi(term, next) {
     var bemobi = ["Há pouco tempo, eu imaginava a Bemobi como",
         "Uma produtora de software (mobile)",
-        "Eu estava errado, há muitos outros serviços de ",
-        "Distribuição de conteúdo de forma estratégica.",
-        "Algo muito muito maior do que eu imaginava...",
-        " ",
-        "O que mais me chama atenção neles de verdade é ",
-        "A forma de trabalhar no ciclo de desenvolvimento",
-        "um  ambiente descontraído e produtivo",
-        "muita preocupação com a qualidade e testes",
-        "...antes de fazer deploy… teste! sem testar sem deploy xD.",
-        " ",
-        "Atualmente meu objetivo é ser uma mente irrequieta e criativa",
-        "Circulando pelos corredores da Bemobi ",
-        " ",
-        "Acredito eu que só falta um passo!"];
+    "Eu estava errado, existe um grande ninho de oportunidades",
+    " ",
+    "O que mais me motiva em continuar tentando entrar na Bemobi é ..",
+    "Um ambiente feliz e produtivo, uma organização focada em qualidade e tecnológia",
+    "Quero muito fazer parte dessa equipe !!!",
+    " ",
+    "Obrigado"];
 
     var start = 0;
     term.clear();
@@ -415,29 +420,14 @@ function bemobi(term, next) {
 }
 function qualidade(term, next) {
     var qualidade = [
-        "Qualidade de software...",
-        "Esse termo é muito interessante...",
-        "Parece que todo dia eu tenho uma nova concepção do seu real significado, seria apenas...",
-        "Testes automatizados?",
-        "Variáveis com nomes significativos?",
-        "Padrões de projeto?",
-        "Baixo acoplamento?",
-        "Tudo isso junto?",
+        "Qualidade de software é uma cultura. desconfiar, testar , melhorar",
+        "Essa cultura contagia toda a equipe, ninguém pode dar um push sem testar...",
+        "Antes de desenvolver qualquer coisa, pense muito na simplicidade de extender aquele código",
+        "Escolha nomes coerentes, e sempre atualize a documentação",
         " ",
-        "Qual é o significado de um software de qualidade?",
-        "Aqui vai a minha resposta pessoal",
-        " ",
-        "Um software de qualidade é um software que foi escrito para pessoas em primeiro lugar",
-        "Um código é de qualidade quando não é estático",
-        "Não depende de nehuma constante estática voadora no escopo global kkkkkk.",
-        "É de qualidade quando não tem um windows executando sua aplicação...",
-        "Um sistema é de qualidade, quando seu cliente está feliz com sua entrega",
-        "é quando você NÃO tem certeza de nada, qualidade é uma busca sem fim pela segurança",
-        "É um pouco irônico, esse código que está concebendo essas palavras",
-        "foi feito em Javascript, o desenvolvedor desse código não tem muita pratica com esse Bixo",
-        "então.., esse código foi realmente um desafio de terminar",
-        "Acredito que ele é um excelente exemplo de código sem qualidade",
-        "Prazos apertados, terras desconhecidas, tudo isso é um grande perigo para a elaboração de código ruim"
+        "Eu realmente gosto de testar/planejar software, acho que encontrar bug's",
+        "È um grande desafio! não é a minha melhor Habilidade, mas concerteza é uma que eu quero ter"
+
     ];
 
     var start = 0;
@@ -530,7 +520,7 @@ function advinhaNome(Terminal, input) {
         //@ASYNC Nivel 2
         typed_message(Terminal, "Digite 'play' para iniciar, ou help ver a lista de comandos", 50, function () {
             Terminal.echo(" ");
-            Terminal.set_prompt('Root@' + input + '/home/root/#');
+            Terminal.set_prompt('Root@' + input + '/bin/#');
 
         });
 
@@ -546,12 +536,12 @@ function playALl(term) {
         pessoal(term, function () {
             motivacao(term, function () {
                 conhecimento(term, function () {
-                    typed_message(term, "Muito obrigado ! Boa sorte pessoal!", 100, function () {
+                    typed_message(term, "Muito obrigado ! Boa sorte "+term.usuario+"!", 100, function () {
                         typed_message(term, "Digite 'play' para iniciar, ou help ver a lista de comandos", 50, function () {
                             term.echo(" ");
-                            term.echo("Linkedin: https://br.linkedin.com/in/isvaldo-fernandes-4a006239");
+                            term.echo("[[bg;purple;white]->Linkedin:]: https://br.linkedin.com/in/isvaldo-fernandes-4a006239");
                             term.echo(" ");
-                            term.echo("Source do projeto: https://github.com/isvaldo/Ola_Bemobenses");
+                            term.echo("[[bg;purple;white]->Source do projeto] https://github.com/isvaldo/Ola_Bemobenses");
                             term.set_prompt('Root@' + term.usuario + '/home/root/#');
                             term.echo(" ");
                             term.echo(" ");
@@ -565,7 +555,7 @@ function playALl(term) {
 }
 
 function filme(term) {
-
+    SomDeFilme.play();
     var frames = [];
     var LINES_PER_FRAME = 14;
     var DELAY = 67;
@@ -610,15 +600,14 @@ function filme(term) {
 }
 
 function preIntroducao(term) {
-    // Apresentação inicial
-    //somdigito=true;
-    term.echo("Terminal:");
+    term.echo("[[bg;purple;white]->Apresentação Console:]");
+    term.echo("");
     typed_message(term, 'Cenario cenario = new Cenario("javascript");       ', 20,
         function () {
             typed_message(term, 'cenario.add(new Mountain("parallax"));', 50,
                 function () {
                     $("#mountains").show("slow");
-                    typed_message(term, 'cenario.add(new Grass("function (){moveOnClick()}"));', 20,
+                    typed_message(term, 'cenario.add(new Grass("function (){moveOnClick()}"));', 35,
                         function () {
                             $("#grass").show("slow");
                             typed_message(term, 'cenario.add(new Stars(x.rand,y.rand),300);', 60,
