@@ -59,11 +59,11 @@ function pessoal(term, next) {
     term.echo(" ");
     var lero = ["Bom, "+term.usuario,
         "Meu nome é isvaldo, eu tenho 22 anos e faço Análise de Sistemas no Infnet",
-        "Eu sou uma pessoa muito interessada por tecnológia e ciência em geral",
+        "Eu sou uma pessoa muito interessada por tecnologia e ciência em geral",
         "Sou muito dedicado, tenho um grande carinho por tudo que faço",
         "Gosto de pisar no desconhecido, estudo sobre qualquer coisa...",
         "Sempre que descubro algo interessante, gosto de compartilhar",
-        "Adoro, Robôtica, Animação, Programação e exploração de dados scraping..",
+        "Adoro Robótica, Animação, Programação e exploração de dados scraping..",
         "Penso em fazer mestrado .. doutorado etc.. adoro a vida academica/pesquisa",
         " ",
         "Ahhh eu também leio bastante sobre Neurociência  kkkk"];
@@ -71,7 +71,7 @@ function pessoal(term, next) {
     var start = 0;
     var FalaPessoal = function (start) {
         //@ ASYNC Nivel 1
-        typed_message(term, lero[start], 110, function () {
+        typed_message(term, lero[start], 100, function () {
             start++;
             if (start == lero.length) {
                 typed_message(term, ". . . .", 600, function () {
@@ -109,16 +109,16 @@ function motivacao(term, next) {
     //@ ASYNC Nivel 1
     typed_message(term, lero[0], 100, function () {
         //@ ASYNC Nivel 2
-        typed_message(term, lero[1], 100, function () {
+        typed_message(term, lero[1], 90, function () {
             //@ ASYNC Nivel 3
             typed_message(term, lero[2], 50, function () {
                 //@ ASYNC Nivel 4
-                typed_message(term, lero[3], 300, function () {
+                typed_message(term, lero[3], 250, function () {
                     //@ ASYNC Nivel 5
                     typed_message(term, lero[4], 70, function () {
                         tamanhoArco = 20;
                         //@ ASYNC Nivel 6
-                        typed_message(term, lero[5], 150, function () {
+                        typed_message(term, lero[5], 125, function () {
                             //Forma das coisas
                             //a mudança começa no seguimento
                             //prodecessor
@@ -133,7 +133,7 @@ function motivacao(term, next) {
                                 SomDeEstrela.play();
                             }, 200);
                             //@ ASYNC Nivel 7
-                            typed_message(term, lero[6], 150, function () {
+                            typed_message(term, lero[6], 125, function () {
                                 // Brilhando, em varias cores
                                 //@ ASYNC Nivel 8
                                 typed_message(term, lero[7], 100, function () {
@@ -141,7 +141,7 @@ function motivacao(term, next) {
                                     gravidade_y = 6;
                                     SomDeSkyFall.play();
                                     //@ ASYNC Nivel 9
-                                    typed_message(term, lero[8], 150, function () {
+                                    typed_message(term, lero[8], 125, function () {
                                         //finale!
                                         //@ ASYNC Nivel 10
                                         typed_message(term, ". . . .", 400, function () {
@@ -200,7 +200,7 @@ function apt_get_update(term, next) {
 
     var start = 0;
     var simulaProcess = function (start) {
-        typed_message(term, lero[start], 2, function () {
+        typed_message(term, lero[start], 1, function () {
             start++;
             if (start == lero.length) {
                 typed_message(term, ". . . .", 500,
@@ -448,7 +448,7 @@ function qualidade(term, next) {
 
 }
 function introducao(term) {
-    typed_message(term, "Olá tudo bem ?", 150, function () {
+    typed_message(term, "Olá tudo bem ?", 130, function () {
         typed_message(term, "Bom, antes de fazer essa apresentação...", 50,
             function () {
                 typed_message(term, "Eu gostaria de conhecer você", 50,
