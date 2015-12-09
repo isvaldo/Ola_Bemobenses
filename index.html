@@ -1,3 +1,9 @@
+<!--
+BEM VINDO !
+Calma... não é flash
+GitHub: https://github.com/isvaldo/Ola_Bemobenses
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +11,7 @@
     <title>Apresentação</title>
     <script src="js/jquery-1.7.1.min.js"></script>
     <script src="js/jquery.mousewheel-min.js"></script>
-    <script src="js/jquery.terminal-min.js"></script>
+    <script src="js/jquery.terminal-0.8.8.min.js"></script>
     <script src="js/howler.js"></script>
     <script>
 
@@ -59,6 +65,7 @@
 
 <div id="container">
     <div id="terminal">
+        
     </div>
 
     <canvas id="pixie" style="display: none"></canvas>
@@ -77,18 +84,14 @@
              * por comando... cada metodo funciona como um comando
              */
             var nome="";
-            $('#terminal').terminal(function(cmd, term) {
+            $('#terminal').terminal(function(cmd, term,altinput) {
 
                 //filtra/formata a entrada
                 cmd = cmd.toLowerCase();
                 cmd = cmd.split(" ")[0];
                 if (cmd.length<3 || !isNaN(cmd)){
                     SomDeError.play();
-                    term.echo("Entrada inválida", {
-                        finalize: function (div) {
-                            div.css("color", "red");
-                        }
-                    });
+                    term.echo("Entrada inválida");
                     return false;
                 }
                 if (nome == ""){
@@ -112,7 +115,7 @@
                             pessoal(term);
                             break;
                         case "motivacao":
-                            movivacao(term);
+                            motivacao(term);
                             break;
                         case  "conhecimento":
                             conhecimento(term);
@@ -136,6 +139,7 @@
             }, {
                 name: 'apresentacao',
                 greetings: null,
+                altinput: true,
                 width: 800,
                 height: 300,
                 onInit: function(term) {

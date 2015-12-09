@@ -63,7 +63,6 @@ $(document).ready(function(){
             $grass.css('background-position', og+((e.clientX-ox)/4)+'px 10px');
         });
         $container.mouseup(function(){
-            $container.unbind('mousemove');
             $container.unbind('mouseup');
         });
     });
