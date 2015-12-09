@@ -299,7 +299,8 @@ function help(term) {
     term.echo("[[guib;white;]profissional] -> retorna uma lista de jobs");
     term.echo("[[guib;white;]bemobi] -> retorna minha palavras sobre a bemobi");
     term.echo("[[guib;white;]qualidade] -> retorna um pouco do que sei sobre o assunto");
-    term.echo("[[guib;white;]filme] -> [[guib;red;] Retorna um classico que quero compartilhar]");
+    term.echo("[[guib;white;]clear] -> limpa a tela");
+    term.echo("[[guib;white;]filme] -> [[guib;red;] retorna um clasico do telnet]");
 }
 
 /**
