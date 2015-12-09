@@ -283,7 +283,7 @@ function conhecimento(term, next) {
         "LLLLLLL    IIIII    NN   NN     UUUUU     XX    XX "
     ];
 
-    typed_batch(term, conhecimento_texto, 50, 300);
+    typed_batch(term, conhecimento_texto, 50, 300, next);
 }
 
 /**
