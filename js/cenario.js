@@ -2,7 +2,10 @@
  * Created by isvaldo on 06/12/15.
  */
 
-
+/**
+ * Emite um som, dependendo da velocidade, aplica uma chance de "funcionar"
+ * @param speed
+ */
 function digito(speed){
     if (speed>40){
         SomDeDigito.play();
@@ -18,6 +21,18 @@ function digito(speed){
         }
     }
 }
+
+
+/**
+ * Retorna letra a letra até que a mensagem seja completada
+ * @param term instancia de terminal
+ * @param message texto a ser exibido
+ * @param delay tempo de espera
+ * @param finish, função que executa ao final
+ * @param song, se existir emite som
+ * @param finish_typing
+ * @returns {Function}
+ */
 function typed(finish_typing) {
     return function (term, message, delay, finish, song) {
         anim = true; // Infelizmente Global
@@ -42,17 +57,61 @@ function typed(finish_typing) {
         }
     };
 }
+/**
+ * Chama Type, como se fosse terminal, no estilo de pergunta
+ * @type {Function}
+ */
 var typed_prompt = typed(function (term, message, prompt) {
     term.set_command('');
     term.set_prompt(message + ' ');
 });
+
+/**
+ * Chama Type como se fosse uma resposta do terminal para o usuario
+ * @type {Function}
+ */
 var typed_message = typed(function (term, message, prompt) {
     term.set_command('');
     term.echo(message);
     term.set_prompt(prompt);
 });
 
+/**
+ * Imprime em lote as mensagens na tela
+ *
+ * @param term  Instancia do terminal
+ * @param menssagens Array com texto para exibir
+ * @param tempoMensagem  Delay por menssagem
+ * @param tempoEspera deley no final
+ * @param next proxima função a ser executada (opcional)
+ */
 
+var typed_batch = function (term, menssagens, tempoMensagem, tempoEspera, next ){
+        var contador = 0;
+
+        var recursivo = function (term, menssagens, tempoMensagem, tempoEspera, next) {
+            typed_message(term, menssagens[contador], tempoMensagem, function () {
+                contador++;
+                if (contador == menssagens.length) {
+                    typed_message(term, ". . . .", tempoEspera, function () {
+                        term.clear();
+                        next && next();
+                        return false;
+                    });
+                    return false;
+                }
+                recursivo(term, menssagens, tempoMensagem, tempoEspera, next);
+
+            });
+        };
+    recursivo(term, menssagens, tempoMensagem, tempoEspera, next);
+};
+
+/**
+ * mostra na tela um resumo pessoal
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function pessoal(term, next) {
     term.clear();
     term.echo("[[guib;white;]Pessoal(self);]");
@@ -68,26 +127,19 @@ function pessoal(term, next) {
         " ",
         "Ahhh eu também leio bastante sobre Neurociência  kkkk"];
 
-    var start = 0;
-    var FalaPessoal = function (start) {
-        //@ ASYNC Nivel 1
-        typed_message(term, lero[start], 100, function () {
-            start++;
-            if (start == lero.length) {
-                typed_message(term, ". . . .", 600, function () {
-                    term.clear();
-                    next && next();
-                    return false;
-                });
-                return false;
-            }
-            FalaPessoal(start);
-        });
-    };
-    FalaPessoal(start);
-
+    typed_batch(term,lero,80,450,next);
 }
-//@ ASYNC Nivel 11
+
+
+/**
+ * Mostra na tela uma mensagem de motivação
+ ******************************************************
+ * OBS: Essa função tem Muitas peculiaridades, por isso
+ * foi feita integralmente sem recursão
+ * *****************************************************
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function motivacao(term, next) {
     term.echo("[[guib;white;]Motivacao(self);]");
     term.echo(" ");
@@ -107,18 +159,18 @@ function motivacao(term, next) {
      * essas entradas em JSON..
      */
     //@ ASYNC Nivel 1
-    typed_message(term, lero[0], 100, function () {
+    typed_message(term, lero[0], 70, function () {
         //@ ASYNC Nivel 2
         typed_message(term, lero[1], 90, function () {
             //@ ASYNC Nivel 3
             typed_message(term, lero[2], 50, function () {
                 //@ ASYNC Nivel 4
-                typed_message(term, lero[3], 250, function () {
+                typed_message(term, lero[3], 200, function () {
                     //@ ASYNC Nivel 5
                     typed_message(term, lero[4], 70, function () {
                         tamanhoArco = 20;
                         //@ ASYNC Nivel 6
-                        typed_message(term, lero[5], 125, function () {
+                        typed_message(term, lero[5], 100, function () {
                             //Forma das coisas
                             //a mudança começa no seguimento
                             //prodecessor
@@ -133,7 +185,7 @@ function motivacao(term, next) {
                                 SomDeEstrela.play();
                             }, 200);
                             //@ ASYNC Nivel 7
-                            typed_message(term, lero[6], 125, function () {
+                            typed_message(term, lero[6], 100, function () {
                                 // Brilhando, em varias cores
                                 //@ ASYNC Nivel 8
                                 typed_message(term, lero[7], 100, function () {
@@ -141,13 +193,13 @@ function motivacao(term, next) {
                                     gravidade_y = 6;
                                     SomDeSkyFall.play();
                                     //@ ASYNC Nivel 9
-                                    typed_message(term, lero[8], 125, function () {
+                                    typed_message(term, lero[8], 100, function () {
                                         //finale!
                                         //@ ASYNC Nivel 10
                                         typed_message(term, ". . . .", 400, function () {
                                             term.clear();
                                             //@ ASYNC Nivel 11
-                                            typed_message(term, lero[9], 120, function () {
+                                            typed_message(term, lero[9], 100, function () {
                                                 gravidade_y = 0;
                                                 // reseta a posição das estrelas
                                                 for (var i = 0; i < pxs.length; i++) {
@@ -169,12 +221,16 @@ function motivacao(term, next) {
             })
         })
     });
-
-
 }
+
+/**
+ * Simula o comando Apt-get " updade ", na verdade é uma instalaçao do geany xD
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function apt_get_update(term, next) {
     term.echo("[[guib;white;]apt_get_update(self);]");
-    var lero = [
+    var apt_get_update_text = [
         "0 pacotes atualizados, 2 pacotes novos instalados, 0 a serem removidos e 9 não atualizados.",
         "É preciso baixar 3.779 GB de arquivos.",
         "Depois desta operação, 9.805 GB adicionais de espaço em disco serão usados.",
@@ -198,30 +254,17 @@ function apt_get_update(term, next) {
         "Processing triggers for Bemobi-Desafio 2...",
         "Processing triggers for Bemobi-Desafio 3..."];
 
-    var start = 0;
-    var simulaProcess = function (start) {
-        typed_message(term, lero[start], 1, function () {
-            start++;
-            if (start == lero.length) {
-                typed_message(term, ". . . .", 500,
-                    function () {
-                        term.clear();
-                        next && next();
-                        return false;
-                    });
-                return false;
-            }
-
-            simulaProcess(start);
-
-        });
-    };
-    simulaProcess(start);
+    typed_batch(term,apt_get_update_text,2,200);
 
 }
 
+/**
+ * retorna um resumo de skills
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function conhecimento(term, next) {
-    var lero = ["Meu conhecimento em programação ?",
+    var conhecimento_texto = ["Meu conhecimento em programação ?",
         "Acho que tudo se resume a",
         " ",
         "Python      (|||||||||||   )",
@@ -240,27 +283,13 @@ function conhecimento(term, next) {
         "LLLLLLL    IIIII    NN   NN     UUUUU     XX    XX "
     ];
 
-    var start = 0;
-    term.clear();
-    term.echo("[[guib;white;]Skills(self);]");
-    var FalaConhecimento = function (start) {
-        typed_message(term, lero[start], 60 - (start * 2), function () { //velocidade
-            start++;
-            if (start == lero.length) {
-                typed_message(term, ". . . .", 500, function () {
-                    term.clear();
-                    next && next();
-                    return false;
-                });
-                return false;
-            }
-            FalaConhecimento(start);
-        });
-    };
-    FalaConhecimento(start);
-
+    typed_batch(term, conhecimento_texto, 50, 300);
 }
 
+/**
+ * Retorna um resumo de todas as funções disponiveis
+ * @param term instancia do terminal
+ */
 function help(term) {
     term.echo(" ");
     term.echo("[[guib;white;]play] -> executa todos os comandos recursivamente");
@@ -274,21 +303,22 @@ function help(term) {
 }
 
 /**
- * Escreve na tela os fragmementos de
- * junior estágio e pleno... em sincronia
+ * Escreve na tela, antigas experiencias.
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
  */
 function profissional(term, next) {
     term.echo("[[guib;white;]Skills(self);]");
-    typed_message(term, "Bom... Eu programo a quase 4 anos profissionalmente", 100, function () {
-        typed_message(term, "Eu já fui...", 150, function () {
+    typed_message(term, "Bom... Eu programo a quase 4 anos profissionalmente", 70, function () {
+        typed_message(term, "Eu já fui...", 100, function () {
             junior(term, function () {
                 estagio(term, function () {
                     pleno(term, function () {
-                        typed_message(term, "Hoje procuro um lugar como a Bemobi, uma empresa cheia de oportunidades.", 80,
+                        typed_message(term, "Hoje procuro um lugar como a Bemobi, uma empresa cheia de oportunidades.", 60,
                             function () {
-                                typed_message(term, "Não é a minha primeira tentativa nessa empresa, e se necessário não vai ser a ultima!", 80,
+                                typed_message(term, "Não é a minha primeira tentativa nessa empresa, e se necessário não vai ser a ultima!", 70,
                                     function () {
-                                        typed_message(term, ". . . .", 400, function () {
+                                        typed_message(term, ". . . .", 300, function () {
                                             term.clear();
                                             next && next();
                                         });
@@ -303,8 +333,13 @@ function profissional(term, next) {
         })
     })
 }
+/**
+ * mostra na tela  um resumo da medksaude
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function junior(term, next) {
-    var junior = ["Programador Junior,",
+    var junior_texto = ["Programador Junior,",
         "                 [Medksaude]",
         "# Conheci o Linux",
         "# Participei de uma equipe incrível",
@@ -312,24 +347,16 @@ function junior(term, next) {
         "# Comecei com Python/jquery/js"
     ];
 
-    var start = 0;
-    term.clear();
-    var FalaJunior = function (start) {
-        typed_message(term, junior[start], 70, function () { //velocidade
-            start++;
-            if (start == junior.length) {
-                typed_message(term, ". . . .", 400, function () {
-                    term.clear();
-                    next && next();
-                });
-            }
-            FalaJunior(start);
-        });
-    };
-    FalaJunior(start);
+    typed_batch(term, junior_texto, 70, 300, next);
 }
+
+/**
+ * Mostra na tela um resumo do estagio na xerox
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function estagio(term, next) {
-    var estagio = [
+    var estagio_texto = [
         "-> Estagiário",
         "                 [Xerox]",
         "# Conheci como é uma empresa de grande porte",
@@ -337,22 +364,14 @@ function estagio(term, next) {
         "# Descobri que dar Suporte para usuários é algo terrível",
         "# Implementei meu primeiro sistema 100% sozinho (:"];
 
-    var start = 0;
-    term.clear();
-    var FalaEstagio = function (start) {
-        typed_message(term, estagio[start], 70, function () { //velocidade
-            start++;
-            if (start == estagio.length) {
-                typed_message(term, ". . . .", 400, function () {
-                    term.clear();
-                    next && next();
-                });
-            }
-            FalaEstagio(start);
-        });
-    };
-    FalaEstagio(start);
+    typed_batch(term, estagio_texto, 70, 300, next);
 }
+
+/**
+ * retorna um resumo da Kappius
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function pleno(term, next) {
     var pleno = ["->Programador pleno",
         "                 [Kappius]",
@@ -368,27 +387,36 @@ function pleno(term, next) {
         "# DBA"
     ];
 
-    var start = 0;
+    var contador = 0;
     term.clear();
-    var FalaPleno = function (start) {
-        typed_message(term, pleno[start], 40 - (start * 2), function () { //velocidade
-            start++;
-            if (start == pleno.length) {
-                typed_message(term, "# Ah claro, eu também fazia o café...", 120, function () {
+    var recursivo = function (contador) {
+        typed_message(term, pleno[contador], 30 - (start * 2), function () { //velocidade
+            contador++;
+            if (contador == pleno.length) {
+                typed_message(term, "# Ah claro, eu também fazia o café...", 100, function () {
                     typed_message(term, ". . . .", 400, function () {
                         term.clear();
                         next && next();
                     })
                 });
+
             }
-            FalaPleno(start);
+            recursivo(contador);
         });
     };
-    FalaPleno(start);
+    recursivo(contador);
+
 
 }
+
+
+/**
+ * Retorna um pouco que sei sobre a bemobi
+ * @param term instancia do terminal
+ * @param next proxima função a ser executada
+ */
 function bemobi(term, next) {
-    var bemobi = ["Há pouco tempo, eu imaginava a Bemobi como",
+    var bemobi_texto = ["Há pouco tempo, eu imaginava a Bemobi como",
         "Uma produtora de software (mobile)",
     "Eu estava errado, existe um grande ninho de oportunidades",
     " ",
@@ -398,28 +426,16 @@ function bemobi(term, next) {
     " ",
     "Obrigado"];
 
-    var start = 0;
-    term.clear();
-    var FalaBemobi = function (start) {
-        typed_message(term, bemobi[start], 70, function () {
-            start++;
-            if (start == bemobi.length) {
-                typed_message(term, ". . . .", 600, function () {
-                    term.clear();
-                    next && next();
-                    return false;
-                });
-                return false;
-            }
-            FalaBemobi(start);
-        });
-    };
-    FalaBemobi(start);
-
-
+    typed_batch(term, bemobi_texto, 70, 300, next);
 }
+
+/**
+ * Um pouco que sei sobre qualidade
+ * @param term instancia do terminal
+ * @param next proxima funcao a ser executada
+ */
 function qualidade(term, next) {
-    var qualidade = [
+    var qualidade_texto = [
         "Qualidade de software é uma cultura. desconfiar, testar , melhorar",
         "Essa cultura contagia toda a equipe, ninguém pode dar um push sem testar...",
         "Antes de desenvolver qualquer coisa, pense muito na simplicidade de extender aquele código",
@@ -430,23 +446,13 @@ function qualidade(term, next) {
 
     ];
 
-    var start = 0;
-    term.clear();
-    var FalaQualidade = function (start) {
-        typed_message(term, qualidade[start], 100, function () {
-            start++;
-            if (start == qualidade.length) {
-                typed_message(term, ". . . .", 500, function () {
-                    term.clear();
-                    next && next();
-                });
-            }
-            FalaQualidade(start);
-        });
-    };
-    FalaQualidade(start);
+    typed_batch(term, qualidade_texto, 70, 300, next);
 
 }
+/**
+ * Introdução
+ * @param term instancia do terminal
+ */
 function introducao(term) {
     typed_message(term, "Olá tudo bem ?", 130, function () {
         typed_message(term, "Bom, antes de fazer essa apresentação...", 50,
@@ -461,6 +467,12 @@ function introducao(term) {
     });
 }
 
+/**
+ * Retorna um nome caso exista no facebook
+ * @param Terminal instancia do terminal
+ * @param input entrada de texto que vem do terminal
+ * @returns {*}
+ */
 function advinhaNome(Terminal, input) {
 
     if (!isNaN(input)) {
@@ -475,7 +487,6 @@ function advinhaNome(Terminal, input) {
         return "";
     }
 
-
     Terminal.clear();
     var listaDePossiveisNomes = [];
     //@Todo Transformar em uma lista
@@ -486,7 +497,7 @@ function advinhaNome(Terminal, input) {
         }
     });
 
-    data = undefined;
+    data = undefined; // libera memoria
 
     var resposta = "";
     if (listaDePossiveisNomes.length > 1) {
@@ -530,7 +541,10 @@ function advinhaNome(Terminal, input) {
     return input;
 }
 
-
+/**
+ * Executa todas as funções recursivamente (ai meu processador... ou melhor o seu)
+ * @param term instancia do terminal
+ */
 function playALl(term) {
     apt_get_update(term, function () {
         pessoal(term, function () {
@@ -554,6 +568,10 @@ function playALl(term) {
     });
 }
 
+/**
+ * UM classico de ascii, uma historico feito do Telnet
+ * @param term instancia do terminal
+ */
 function filme(term) {
     SomDeFilme.play();
     var frames = [];
@@ -599,6 +617,10 @@ function filme(term) {
     play(term);
 }
 
+/**
+ * Simulação de criação do cenario xD
+ * @param term instancia do terminal
+ */
 function preIntroducao(term) {
     term.echo("[[bg;purple;white]->Apresentação Console:]");
     term.echo("");
@@ -612,7 +634,7 @@ function preIntroducao(term) {
                             $("#grass").show("slow");
                             typed_message(term, 'cenario.add(new Stars(x.rand,y.rand),300);', 60,
                                 function () {
-                                    typed_message(term, 'cenario.showSky();', 200,
+                                    typed_message(term, 'cenario.showSky();', 150,
                                         function () {
                                             SomDeSky.play();
                                             $("#pixie").show("slow");
@@ -621,7 +643,7 @@ function preIntroducao(term) {
                                             typed_message(term, 'exit & start apresentacao', 150,
                                                 function () {
                                                     term.echo("");
-                                                    typed_message(term, ". . . .", 400,
+                                                    typed_message(term, ". . . .", 300,
                                                         function () {
                                                             term.clear();
                                                             introducao(term);

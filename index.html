@@ -17,6 +17,12 @@ GitHub: https://github.com/isvaldo/Ola_Bemobenses
 
         /**
          * HowL Trata a compatibilidade entre navegadores da API de Audio
+         *
+         * A ideia era fazer tudo nativo, começou a aparecer muitos problemas
+         * então utilizei essa lib
+         *
+         * Segue a discução que abri sobre o problema que tive ...
+         * http://pt.stackoverflow.com/questions/102533/problema-de-compatibilidade-com-%C3%A1udio-api-firefox/102538#102538
          * @type {*|Howl}
          */
         var SomDeDigito = new Howl({
@@ -46,7 +52,7 @@ GitHub: https://github.com/isvaldo/Ola_Bemobenses
         var anim = false; // Quando tem animação, o teclado fica desabilitado
 
         console.log("UM DESENVOLVEDOR !!!");
-        console.log("Fique tranquilo, não é flash");
+        console.log("Fique tranquilo, não é flash!!");
         console.log("Achou bug's ? Reporte para mim por favor: https://github.com/isvaldo/Ola_Bemobenses");
 
     </script>
@@ -65,7 +71,6 @@ GitHub: https://github.com/isvaldo/Ola_Bemobenses
 
 <div id="container">
     <div id="terminal">
-        
     </div>
 
     <canvas id="pixie" style="display: none"></canvas>
@@ -101,8 +106,13 @@ GitHub: https://github.com/isvaldo/Ola_Bemobenses
                 //Compartilha o nome pelo contexto
                 // pode ser acessado de qualquer parte do escopo agora
                term['usuario'] = nome;
-                //Comandos
 
+
+                /**
+                 * Bloco de comandos
+                 * você pode encontrar toda a implementação
+                 * no arquivo cenario.js
+                 */
                     switch (cmd){
                         case "play":
 
@@ -139,11 +149,11 @@ GitHub: https://github.com/isvaldo/Ola_Bemobenses
             }, {
                 name: 'apresentacao',
                 greetings: null,
-                altinput: true,
+                altinput: true, // Unica esperança de funcionar no android
                 width: 800,
                 height: 300,
                 onInit: function(term) {
-                    preIntroducao(term);
+                    pessoal(term);
                 },
                 keydown: function(e) {
 
