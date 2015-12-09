@@ -159,9 +159,9 @@ function motivacao(term, next) {
      * essas entradas em JSON..
      */
     //@ ASYNC Nivel 1
-    typed_message(term, lero[0], 70, function () {
+    typed_message(term, lero[0], 50, function () {
         //@ ASYNC Nivel 2
-        typed_message(term, lero[1], 90, function () {
+        typed_message(term, lero[1], 60, function () {
             //@ ASYNC Nivel 3
             typed_message(term, lero[2], 50, function () {
                 //@ ASYNC Nivel 4
@@ -254,7 +254,7 @@ function apt_get_update(term, next) {
         "Processing triggers for Bemobi-Desafio 2...",
         "Processing triggers for Bemobi-Desafio 3..."];
 
-    typed_batch(term,apt_get_update_text,2,200);
+    typed_batch(term,apt_get_update_text,2,200, next);
 
 }
 
@@ -309,7 +309,7 @@ function help(term) {
  */
 function profissional(term, next) {
     term.echo("[[guib;white;]Skills(self);]");
-    typed_message(term, "Bom... Eu programo a quase 4 anos profissionalmente", 70, function () {
+    typed_message(term, "Bom... Eu programo a quase 4 anos profissionalmente", 50, function () {
         typed_message(term, "Eu já fui...", 100, function () {
             junior(term, function () {
                 estagio(term, function () {
@@ -347,7 +347,7 @@ function junior(term, next) {
         "# Comecei com Python/jquery/js"
     ];
 
-    typed_batch(term, junior_texto, 70, 300, next);
+    typed_batch(term, junior_texto, 40, 200, next);
 }
 
 /**
@@ -364,7 +364,7 @@ function estagio(term, next) {
         "# Descobri que dar Suporte para usuários é algo terrível",
         "# Implementei meu primeiro sistema 100% sozinho (:"];
 
-    typed_batch(term, estagio_texto, 70, 300, next);
+    typed_batch(term, estagio_texto, 40, 200, next);
 }
 
 /**
@@ -390,11 +390,11 @@ function pleno(term, next) {
     var contador = 0;
     term.clear();
     var recursivo = function (contador) {
-        typed_message(term, pleno[contador], 30 - (start * 2), function () { //velocidade
+        typed_message(term, pleno[contador], 30 - (contador * 2), function () { //velocidade
             contador++;
             if (contador == pleno.length) {
                 typed_message(term, "# Ah claro, eu também fazia o café...", 100, function () {
-                    typed_message(term, ". . . .", 400, function () {
+                    typed_message(term, ". . . .", 200, function () {
                         term.clear();
                         next && next();
                     })
@@ -421,7 +421,7 @@ function bemobi(term, next) {
     "Eu estava errado, existe um grande ninho de oportunidades",
     " ",
     "O que mais me motiva em continuar tentando entrar na Bemobi é ..",
-    "Um ambiente feliz e produtivo, uma organização focada em qualidade e tecnológia",
+    "Um ambiente feliz e produtivo, uma organização focada em qualidade e tecnologia",
     "Quero muito fazer parte dessa equipe !!!",
     " ",
     "Obrigado"];
@@ -441,9 +441,11 @@ function qualidade(term, next) {
         "Antes de desenvolver qualquer coisa, pense muito na simplicidade de extender aquele código",
         "Escolha nomes coerentes, e sempre atualize a documentação",
         " ",
-        "Eu realmente gosto de testar/planejar software, acho que encontrar bug's",
-        "È um grande desafio! não é a minha melhor Habilidade, mas conserteza é uma que eu quero ter"
-
+        "Eu acredito que Testar, refatorar, CodeReview, Documentação, entrga continua ..",
+        "É com certeza uma das coisas mais importante no desenvolvimento de qualquer software",
+        "Por experiência própria, já vi os efeitos de não fazer testes de regressão",
+        "Não testar gera uma Ilusão de produtividade, muita gente diz que o TDD é improdutivo ...",
+        "Bom, eu tenho muita vontade de estudar cada vez mais essa area!"
     ];
 
     typed_batch(term, qualidade_texto, 70, 300, next);
@@ -518,7 +520,7 @@ function advinhaNome(Terminal, input) {
         resposta = resposta + "Olá " + listaDePossiveisNomes[0] + ", acho que vi seu nome no desafio!!";
     }
     else {
-        resposta = "Não encontrei o seu nome no desafio, muito prazer " + input;
+        resposta = "Muito prazer " + input+" !!!";
     }
 
     //@ASYNC Nivel 1
