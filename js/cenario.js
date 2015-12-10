@@ -464,6 +464,7 @@ function introducao(term) {
                     function () {
                         typed_prompt(term, "Qual é o seu primeiro nome?:", 50,
                             function () {
+                                $(document).find('.altinput').focus();
                             });
                     });
             });
