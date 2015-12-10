@@ -8,9 +8,80 @@
     <script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-core/jasmine-html.js"></script>
     <script type="text/javascript" src="jasmine/lib/jasmine-core/boot.js"></script>
-    <title></title>
+    <!-- Meus imports-->
+    <script src="../js/jquery-1.7.1.min.js"></script>
+    <script src="../js/jquery.mousewheel-min.js"></script>
+    <script src="../js/jquery.terminal-0.8.8.min.js"></script>
+    <script src="../js/howler.js"></script>
+    <script src="../js/facebook.js"></script>
+    <script src="../js/sky.js"></script>
+    <script src="../js/cenario.js"></script>
+    <title>Bateria de testes</title>
 </head>
 <body>
+
+<script>
+    describe("Som de tecla", function() {
+
+        var SomDeDigito = new Howl({
+            urls: ['../sounds/keyboard.ogg', '../sounds/keyboard.mp3']
+        }).play();
+
+        return true;
+    });
+
+    describe("Som de erro", function() {
+
+        var SomDeError = new Howl({
+            urls: ['../sounds/erro.ogg', '../sounds/erro.mp3']
+        }).play();
+
+        return true;
+    });
+
+
+    describe("Som do ceu (entrada)", function() {
+
+
+        var SomDeSky = new Howl({
+            urls: ['../sounds/sky.ogg', '../sounds/sky.mp3']
+        }).play();
+
+        return true;
+    });
+
+    describe("Som de gravidade (animação)", function() {
+
+
+        var SomDeSkyFall = new Howl({
+            urls: ['../sounds/skyFall.ogg', '../sounds/skyFall.mp3']
+        }).play();
+
+        return true;
+    });
+
+
+
+
+
+    describe("Som do filme", function() {
+
+
+        var SomDeFilme = new Howl({
+            urls: ['../sounds/war.ogg', '../sounds/war.mp3']
+        }).play();
+
+        return true;
+    });
+
+    describe("Mostrar montanha", function() {
+        
+        return true;
+    });
+
+
+
+</script>
 
 </body>
 </html>
